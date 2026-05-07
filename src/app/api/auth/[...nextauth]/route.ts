@@ -1,7 +1,9 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import { NextAuthOptions } from "next-auth"; // Tuodaan tyyppimäärittely
 
-const handler = NextAuth({
+// 1. Määritellään ja exportataan asetukset muuttujassa
+export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.OAUTH_CLIENT_ID!,
@@ -9,6 +11,11 @@ const handler = NextAuth({
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
-});
+  // Tähän voi lisätä myöhemmin esim. callbacks, jos tarpeen
+};
 
+// 2. Luodaan handler käyttämällä noita asetuksia
+const handler = NextAuth(authOptions);
+
+// 3. Exportataan handler GET ja POST metodeille
 export { handler as GET, handler as POST };

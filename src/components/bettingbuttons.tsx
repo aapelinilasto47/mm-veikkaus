@@ -83,13 +83,13 @@ export default function BettingButtons({
             </span>
           ) : (
             <span className="text-[10px] text-gray-200 uppercase font-black tracking">
-              {disabled ? "Match Started" : "Set Prediction"}
+              {disabled ? "Sulkeutunut" : "Veikkaa"}
             </span>
           )}
         </div>
         {!disabled && hasPrediction && (
-          <span className="text-blue-500 text-[10px] font-black ml-1 uppercase">
-            {isOpen ? "Close ▲" : "Edit ▼"}
+          <span className="text-blue-500 text-[10px] font-black ml-1 mt-1 uppercase">
+            {isOpen ? "Sulje ▲" : "Muokkaa ▼"}
           </span>
         )}
       </div>
@@ -142,13 +142,17 @@ export default function BettingButtons({
           <button
             onClick={handleSave}
             disabled={loading}
-            className={`w-full py-3 rounded-lg font-black uppercase tracking-tighter transition-all ${
+            className={`w-full py-3 px-4 rounded-lg font-black uppercase tracking-tighter transition-all ${
               isSaved
                 ? "bg-emerald-600 text-white"
                 : "bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/40 active:scale-95"
             }`}
           >
-            {loading ? "Saving..." : isSaved ? "Saved! ✓" : "Save"}
+            {loading
+              ? "Tallennetaan..."
+              : isSaved
+                ? "Tallennettu! ✓"
+                : "Tallenna"}
           </button>
         </div>
       )}
