@@ -5,6 +5,8 @@ const PredictionSchema = new mongoose.Schema(
     matchId: { type: String, required: true },
     userId: { type: String, required: true },
     choice: { type: String, enum: ["1", "X", "2"], required: true },
+    homeScore: { type: Number, required: true },
+    awayScore: { type: Number, required: true },
   },
   { timestamps: true },
 );
