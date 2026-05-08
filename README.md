@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## 🏒 IIHF World Championship Prediction Platform 2026
 
-## Getting Started
+Vie MM-kisaelämys uudelle tasolle kisaamalla kavereita vastaan ilmaisessa lätkäveikkauksessa!
+Tämä on täyden pinon (Full-stack) verkkosovellus vuoden 2026 jääkiekon MM-kisoja varten. Sovelluksen avulla lätkäfanit voivat kisata keskenään veikkaamalla otteluiden lopputuloksia.
 
-First, run the development server:
+## 🛠 Tekninen arkkitehtuuri
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Sovellus on rakennettu modernilla Next.js 14+ -kehityskehyksellä, ja se hyödyntää Server Components -rakennetta tehokkaaseen datan käsittelyyn.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Frontend: React & Tailwind CSS – Responsiivinen käyttöliittymä on optimoitu mobiiliin, jotta veikkaukset voi jättää vaivatta vaikkapa hallin katsomosta.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Backend: Next.js API Routes (Serverless) – Hoitaa veikkausten tallennuksen ja validointiin liittyvän logiikan.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Tietokanta: MongoDB Atlas – Skaalautuva pilvitietokanta ottelu- ja käyttäjädatan säilytykseen.
 
-## Learn More
+Autentikaatio: NextAuth.js (Google OAuth 2.0) – Turvallinen ja nopea kirjautuminen ilman erillisten salasanojen hallintaa.
 
-To learn more about Next.js, take a look at the following resources:
+## 📊 Datan hallinta ja automatisointi
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Turnausdatan hallinta on ratkaistu erillisellä Python-pohjaisella data-pipelinellä, joka varmistaa, että sovelluksen tiedot pysyvät ajan tasalla ilman manuaalista työtä.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Batch Processing: Otteluohjelma ja tulokset synkronoidaan kerran vuorokaudessa eräajona. Tämä takaa datan eheyden ja vähentää turhaa palvelinkuormaa.
 
-## Deploy on Vercel
+Idempotentti päivitys: Ottelut tunnistetaan uniikeilla hash-tunnisteilla (joukkueet + päivämäärä). Tämä estää duplikaatit, vaikka synkronointi ajettaisiin useasti.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Scraping-logiikka: Python-skriptit (Playwright/BeautifulSoup) hakevat viralliset tulokset ja päivittävät vain tarvittavat kentät ($set), jolloin otteluiden metadata, kuten alkamisajat, säilyy muuttumattomana.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🏆 Kisamekaniikka ja säännöt
+
+Pistelaskenta noudattaa "reilun pelin" henkeä ja palkitsee erityisesti tarkkuudesta:
+
+10 pistettä: Täysosuma (Jackpot 🎯) – Maalit täsmälleen oikein.
+
+5 pistettä: Oikea voittaja ja oikea maaliero.
+
+3 pistettä: Oikea voittaja (1X2-tulos).
+
+Tasapelisääntö: Jos pisteet ovat tasan, "täysosumien" (Jackpot) määrä ratkaisee sijoituksen leaderboardilla.
+
+## 🔒 Turvallisuus: "Pelit alkavat ajallaan"
+
+Sovelluksessa on sisäänrakennettu aikatarkistus:
+
+Veikkaaminen sulkeutuu automaattisesti kunkin ottelun virallisella alkamishetkellä.
+
+Validointi tapahtuu palvelintasolla (startTime-tarkistus), mikä estää veikkausten muokkaamisen pelin jo alettua.
+
+## 🚀 Käyttöönotto kehittäjille
+
+npm install – Asenna riippuvuudet.
+
+Määritä .env.local – Syötä MongoDB-osoite ja Google API-avaimet.
+
+npm run build – Käännä tuotantoversio.
+
+python movingdata.py – Päivitä ottelut ja tulokset.
+
+Kehittäjä: Aapeli Nilasto – IT-tradenomi ja lätkäfani, joka haluaa ratkaista monimutkaiset data-haasteet siistillä koodilla ja hyvällä UX-suunnittelulla.
