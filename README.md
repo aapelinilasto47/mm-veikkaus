@@ -53,6 +53,8 @@ Määritä .env.local – Syötä MongoDB-osoite ja Google API-avaimet.
 
 npm run build – Käännä tuotantoversio.
 
+python getdata.py - Hae ottelut ja tulokset.
+
 python movingdata.py – Päivitä ottelut ja tulokset.
 
 Kehittäjä: Aapeli Nilasto – IT-tradenomi ja lätkäfani, joka haluaa ratkaista monimutkaiset data-haasteet siistillä koodilla ja hyvällä UX-suunnittelulla.
