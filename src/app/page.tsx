@@ -119,6 +119,16 @@ export default async function Home() {
           Veikkaa otteluiden tuloksia ja kerää pisteitä! Kirjaudu sisään
           tallentaaksesi veikkaukset.
         </h2>
+        <div className="flex flex-col items-center mb-8">
+          <a
+            href="https://github.com/aapelinilasto47/mm-veikkaus"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-sm bg-gray-800 px-3 py-1 rounded hover:bg-gray-700 transition-colors font-black uppercase tracking-widest"
+          >
+            <span>GitHub</span>
+          </a>
+        </div>
 
         <div className="max-w-3xl mx-auto mb-8">
           <details className="group bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-2xl">
