@@ -7,6 +7,7 @@ const matchSchema = new mongoose.Schema({
   away: { type: String, required: true },
   awayScore: { type: Number, required: false },
   startTime: { type: Date, required: true },
+  isPlayoff: { type: Boolean, default: false },
 });
 
 export default mongoose.models.Match || mongoose.model("Match", matchSchema);

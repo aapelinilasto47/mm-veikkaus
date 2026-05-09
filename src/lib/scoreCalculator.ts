@@ -12,6 +12,7 @@ export function calculateMatchPoints(
   actualAway: number,
   predictedHome: number,
   predictedAway: number,
+  isPlayoff: boolean,
 ): ScoreResult {
   // 1. Määritetään oikeat merkit (1X2)
   const actualChoice =
@@ -39,12 +40,17 @@ export function calculateMatchPoints(
 
   // 3. Pisteytyslogiikkasi mukaan:
   let points = 0;
+
   if (isPerfectScore) {
     points = 10;
   } else if (isCloseCall) {
     points = 5; // 3p merkistä + 2p läheltä piti
   } else if (isCorrectWinner) {
     points = 3;
+  }
+
+  if (isPlayoff) {
+    points = points * 2;
   }
 
   return {
