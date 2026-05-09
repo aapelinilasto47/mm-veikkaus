@@ -79,7 +79,9 @@ export default async function Home() {
     // Päivä ja kuukausi muodossa D.M.
     const dayMonth = `${d.getDate()}.${d.getMonth() + 1}.`;
 
-    const dateLabel = `${weekday} ${dayMonth}`;
+    const isPlayoff = match.isPlayoff ? " (Pudotuspelit)" : "";
+
+    const dateLabel = `${weekday} ${dayMonth} ${isPlayoff}`;
 
     if (!groups[dateLabel]) {
       groups[dateLabel] = [];
