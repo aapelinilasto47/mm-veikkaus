@@ -47,10 +47,6 @@ export default function RulesAccordion() {
                   voittaja
                 </li>
               </ul>
-              <h4 className="font-black text-amber-400 uppercase text-xs mt-4">
-                Playoff-otteluissa pisteet tuplataan! Esimerkiksi täysosuma 10p
-                → 20p.
-              </h4>
             </div>
 
             {/* Peliaika-sääntö */}
@@ -68,6 +64,12 @@ export default function RulesAccordion() {
                 merkitään tasapeli (X).
               </p>
             </div>
+          </div>
+          <div className="border-t border-gray-700 pt-2">
+            <h4 className="font-black text-amber-400 uppercase text-md mt-4">
+              Playoff-otteluissa pisteet tuplataan!
+              <br></br>Esimerkiksi täysosuma 10p → 20p.
+            </h4>
           </div>
 
           <div className="text-[10px] text-gray-500 text-center pt-2 uppercase tracking-widest border-t border-gray-800">
