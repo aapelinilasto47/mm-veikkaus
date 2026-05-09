@@ -67,7 +67,7 @@ export default function RulesAccordion() {
           </div>
           <div className="border-t border-gray-700 pt-2">
             <h4 className="font-black text-amber-400 uppercase text-md mt-4">
-              Playoff-otteluissa pisteet tuplataan!
+              Pudotuspeleissä pisteet tuplataan!
               <br></br>Esimerkiksi täysosuma 10p → 20p.
             </h4>
           </div>
