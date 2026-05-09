@@ -47,6 +47,7 @@ export default async function Home() {
         match.awayScore,
         pred.homeScore,
         pred.awayScore,
+        match.isPlayoff, // Välitetään tieto playoff-ottelusta
       );
 
       if (!leaderBoardMap[pred.userId]) {
@@ -252,6 +253,7 @@ export default async function Home() {
                     match.awayScore,
                     userPrediction.homeScore,
                     userPrediction.awayScore,
+                    match.isPlayoff, // Välitetään tieto playoff-ottelusta
                   );
                   earnedPoints = scoreDetails.points;
                 }
