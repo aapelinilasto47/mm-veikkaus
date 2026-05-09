@@ -3,7 +3,7 @@
 Vie MM-kisaelämys uudelle tasolle kisaamalla kavereita vastaan ilmaisessa lätkäveikkauksessa!
 Tämä on täyden pinon (Full-stack) verkkosovellus vuoden 2026 jääkiekon MM-kisoja varten. Sovelluksen avulla lätkäfanit voivat kisata keskenään veikkaamalla otteluiden lopputuloksia.
 
-(https://mm-veikkaus.vercel.app/)[MM-veikkaus 2026]
+https://mm-veikkaus.vercel.app/
 
 ## 🛠 Tekninen arkkitehtuuri
 
