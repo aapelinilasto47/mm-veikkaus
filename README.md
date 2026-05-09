@@ -37,6 +37,8 @@ Pistelaskenta noudattaa "reilun pelin" henkeä ja palkitsee erityisesti tarkkuud
 
 Tasapelisääntö: Jos pisteet ovat tasan, "täysosumien" (Jackpot) määrä ratkaisee sijoituksen leaderboardilla.
 
+Pudotuspelit: Pudotuspeleissä pisteet tuplataan! Esim. Täysosuma - 20 pistettä.
+
 ## 🔒 Turvallisuus: "Pelit alkavat ajallaan"
 
 Sovelluksessa on sisäänrakennettu aikatarkistus:
