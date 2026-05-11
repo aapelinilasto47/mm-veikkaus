@@ -7,6 +7,7 @@ import { match } from "assert/strict";
 import { getServerSession } from "next-auth/next";
 import { calculateMatchPoints } from "../lib/scoreCalculator";
 import RulesAccordion from "../components/rulesaccordion";
+import Leaderboard from "../components/leaderboard";
 
 export default async function Home() {
   await dbConnect();
@@ -34,6 +35,16 @@ export default async function Home() {
   > = {};
 
   allPredictions.forEach((pred: any) => {
+    if (!leaderBoardMap[pred.userId]) {
+      leaderBoardMap[pred.userId] = {
+        name: pred.userId, // Tämä on yleensä sähköposti sessionista
+        points: 0,
+        jackpots: 0,
+      };
+    }
+  });
+
+  allPredictions.forEach((pred: any) => {
     const match = allMatches.find(
       (m: any) => m._id.toString() === pred.matchId,
     );
@@ -49,14 +60,6 @@ export default async function Home() {
         pred.awayScore,
         match.isPlayoff, // Välitetään tieto playoff-ottelusta
       );
-
-      if (!leaderBoardMap[pred.userId]) {
-        leaderBoardMap[pred.userId] = {
-          name: pred.userId,
-          points: 0,
-          jackpots: 0,
-        };
-      }
 
       leaderBoardMap[pred.userId].points += scoreResult.points;
       if (scoreResult.isPerfectScore) {
@@ -117,10 +120,13 @@ export default async function Home() {
         <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-700 to-red-500 uppercase tracking-tighter">
           Lätkän MM-veikkaus 2026
         </h1>
+        <span className="px-2 py-0.5 bg-blue-500/20 text-blue-400 text-[10px] font-bold rounded border border-blue-500/30 uppercase tracking-widest">
+          Beta
+        </span>
         <div className="h-1 w-24 bg-blue-500 mx-auto mt-4 mb-4 rounded-full"></div>
         <h2 className="text-lg mb-10 font-black text-transparent bg-clip-text bg-white uppercase tracking-tighter">
-          Veikkaa otteluiden tuloksia ja kerää pisteitä! Kirjaudu sisään
-          tallentaaksesi veikkaukset.
+          Veikkaa otteluiden tuloksia ja kilpaile ystäviesi kanssa! Kirjaudu
+          sisään tallentaaksesi veikkaukset.
         </h2>
         <div className="flex flex-col items-center mb-8">
           <a
@@ -134,96 +140,20 @@ export default async function Home() {
         </div>
 
         <div className="max-w-3xl mx-auto mb-8">
-          <details className="group bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-2xl">
-            <summary className="list-none p-4 cursor-pointer flex justify-between items-center group-open:bg-gray-800 transition-colors">
-              <div className="flex items-center gap-3">
-                <span className="text-xl">🏆</span>
-                <span className="font-black uppercase tracking-tighter text-blue-400">
-                  Näytä tulostaulukko
-                </span>
-              </div>
-              <span className="text-gray-500 group-open:rotate-180 transition-transform">
-                ▼
-              </span>
-            </summary>
-
-            <div className="p-4 bg-black/20">
-              <RulesAccordion />
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="text-[10px] uppercase text-gray-500 border-b border-gray-800">
-                    <th className="pb-2">Sija</th>
-                    <th className="pb-2">Pelaaja</th>
-                    <th className="pb-2 text-right">Jackpotit</th>
-                    <th className="pb-2 text-right">Pisteet</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-800">
-                  {/* 1. TOP 10 RENDERÖINTI */}
-                  {sortedLeaderboard.slice(0, 10).map((player, index) => {
-                    const isMe = player.name === session?.user?.email;
-                    return (
-                      <tr
-                        key={player.name}
-                        className={isMe ? "text-yellow-500" : "text-gray-300"}
-                      >
-                        <td className="py-3 font-mono text-xs">{index + 1}.</td>
-                        <td className="py-3 font-bold truncate max-w-[120px]">
-                          {player.name.split("@")[0]}
-                        </td>
-                        <td className="py-3 text-right text-xs">
-                          🎯 {player.jackpots}
-                        </td>
-                        <td className="py-3 text-right font-black text-lg">
-                          {player.points}
-                        </td>
-                      </tr>
-                    );
-                  })}
-
-                  {/* 2. EROTIN JA OMA SIJA (Jos Top 10 ulkopuolella) */}
-                  {(() => {
-                    const myIndex = sortedLeaderboard.findIndex(
-                      (p) => p.name === session?.user?.email,
-                    );
-                    // Jos käyttäjä löytyy, mutta vasta sijalta 11 tai enemmän
-                    if (myIndex >= 10) {
-                      const me = sortedLeaderboard[myIndex];
-                      return (
-                        <>
-                          {/* Tyylikäs katkoviiva/erotinrivi */}
-                          <tr>
-                            <td
-                              colSpan={4}
-                              className="py-2 text-center text-gray-600 text-[10px] tracking-[0.5em]"
-                            >
-                              ••••
-                            </td>
-                          </tr>
-                          {/* Oma sija */}
-                          <tr className="text-yellow-500">
-                            <td className="py-3 font-mono text-xs">
-                              {myIndex + 1}.
-                            </td>
-                            <td className="py-3 font-bold truncate max-w-[120px]">
-                              {me.name.split("@")[0]} (Sinä)
-                            </td>
-                            <td className="py-3 text-right text-xs">
-                              🎯 {me.jackpots}
-                            </td>
-                            <td className="py-3 text-right font-black text-lg">
-                              {me.points}
-                            </td>
-                          </tr>
-                        </>
-                      );
-                    }
-                    return null;
-                  })()}
-                </tbody>
-              </table>
-            </div>
-          </details>
+          <Leaderboard
+            sortedLeaderboard={JSON.parse(JSON.stringify(sortedLeaderboard))}
+            currentUserEmail={session?.user?.email}
+          />
+        </div>
+        <div className="w-full bg-amber-950/30 border border-amber-900/50 p-3 rounded-lg mb-6 flex items-center gap-3">
+          <span className="text-xl">⚠️</span>
+          <p className="text-xs md:text-sm text-amber-200/80 leading-relaxed">
+            <span className="font-bold text-amber-400 uppercase">Huom:</span>{" "}
+            Sovellus on vielä kehitysvaiheessa. Tulosten päivityksessä ja
+            pistelaskennassa saattaa esiintyä viiveitä tai epätarkkuuksia
+            testauksen aikana. Pahoittelemme mahdollisia häiriöitä ja kiitämme
+            kärsivällisyydestä!
+          </p>
         </div>
       </header>
 
