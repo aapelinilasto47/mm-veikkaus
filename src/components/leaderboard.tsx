@@ -26,13 +26,6 @@ export default function Leaderboard({
     if (saved) setFollowedPlayers(JSON.parse(saved));
   }, []);
 
-  // Tyhjennetään seurattavat, jos session päättyy (uloskirjautuminen)
-  useEffect(() => {
-    if (!currentUserEmail) {
-      setFollowedPlayers([]);
-    }
-  }, [currentUserEmail]);
-
   // Suosikin lisäys/poisto
   const toggleFollow = (name: string) => {
     const newFollowed = followedPlayers.includes(name)
