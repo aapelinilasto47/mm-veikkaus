@@ -183,7 +183,7 @@ export default function Leaderboard({
             </tbody>
           </table>
           <div className="mt-4 text-right text-xs text-gray-500">
-            Tulostaulukko näyttää 20 pelaajaa. Osallistujia yhteensä:{" "}
+            Tulostaulukko näyttää max. 20 pelaajaa. Osallistujia yhteensä:{" "}
             {sortedLeaderboard.length}
           </div>
         </div>

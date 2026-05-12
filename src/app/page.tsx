@@ -135,7 +135,7 @@ export default async function Home() {
                 {sortedLeaderboard.findIndex(
                   (p) => p.name === session.user?.email,
                 ) + 1}
-                / {sortedLeaderboard.length}
+                {` / ${sortedLeaderboard.length}`}
               </span>
             </p>
           </div>
