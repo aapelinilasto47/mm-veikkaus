@@ -51,7 +51,7 @@ def scrape_fixtures():
             away_score = clean_score(away_score)
             
             # Korjattu isPlayoff-tarkistus
-            playoff_start = "2026-05-21T00:00:00" # MM-kisojen puolivälierät alkavat yleensä aiemmin
+            playoff_start = "2026-05-27T00:00:00" # MM-kisojen puolivälierät alkavat yleensä aiemmin
             iso_time = clean_time.isoformat()
 
             fixtures.append({
