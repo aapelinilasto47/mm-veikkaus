@@ -125,9 +125,22 @@ export default async function Home() {
         </span>
         <div className="h-1 w-24 bg-blue-500 mx-auto mt-4 mb-4 rounded-full"></div>
         <h2 className="text-lg mb-10 font-black text-transparent bg-clip-text bg-white uppercase tracking-tighter">
-          Veikkaa otteluiden tuloksia ja kilpaile ystäviesi kanssa! Kirjaudu
-          sisään tallentaaksesi veikkaukset.
+          Veikkaa otteluiden tuloksia ja kilpaile ystäviesi kanssa!
         </h2>
+        {session && (
+          <div className="mb-6 p-4 bg-blue-500/10 border border-blue-500/20 rounded text-center">
+            <p className="text-blue-300 text-sm uppercase tracking-widest font-bold">
+              Olet tällä hetkellä sijalla <br></br>
+              <span className="text-yellow-400 font-black text-lg">
+                {sortedLeaderboard.findIndex(
+                  (p) => p.name === session.user?.email,
+                ) + 1}
+                / {sortedLeaderboard.length}
+              </span>
+            </p>
+          </div>
+        )}
+
         <div className="flex flex-col items-center mb-8">
           <a
             href="https://github.com/aapelinilasto47/mm-veikkaus"
