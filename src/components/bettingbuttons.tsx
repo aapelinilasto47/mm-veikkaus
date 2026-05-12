@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 
 export default function BettingButtons({
   matchId,
@@ -15,6 +16,7 @@ export default function BettingButtons({
   initialAwayScore?: number;
   disabled: boolean;
 }) {
+  const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
   const [homeScore, setHomeScore] = useState<number>(initialHomeScore ?? 0);
   const [awayScore, setAwayScore] = useState<number>(initialAwayScore ?? 0);
@@ -139,23 +141,30 @@ export default function BettingButtons({
             </div>
           </div>
 
-          <button
-            onClick={handleSave}
-            disabled={loading}
-            className={`w-full py-3 px-4 rounded-lg font-black uppercase tracking-tighter transition-all ${
-              isSaved
-                ? "bg-emerald-600 text-white"
-                : "bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/40 active:scale-95"
-            }`}
-          >
-            {loading
-              ? "Tallennetaan..."
-              : isSaved
-                ? "Tallennettu! ✓"
-                : "Tallenna"}
-          </button>
+          {!session ? (
+            <div className="text-sm text-red-500 text-center">
+              <b>Kirjaudu sisään tallentaaksesi veikkauksesi!</b>
+            </div>
+          ) : (
+            <button
+              onClick={handleSave}
+              disabled={loading}
+              className={`w-full py-3 px-4 rounded-lg font-black uppercase tracking-tighter transition-all ${
+                isSaved
+                  ? "bg-emerald-600 text-white"
+                  : "bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/40 active:scale-95"
+              }`}
+            >
+              {loading
+                ? "Tallennetaan..."
+                : isSaved
+                  ? "Tallennettu! ✓"
+                  : "Tallenna"}
+            </button>
+          )}
         </div>
       )}
+
       <div className="flex gap-2 mt-3">
         {["1", "X", "2"].map((choice) => {
           const isActive = hasPrediction && currentChoice === choice;
