@@ -83,7 +83,7 @@ def scrape_results():
         
         # Odota ottelurivejä
         try:
-            page.wait_for_selector(".event__match", timeout=10000)  # Odota enintään 10 sekuntia
+            page.wait_for_selector(".event__match", timeout=5000)  # Odota enintään 5 sekuntia
         except:
             print("No matches found on results page.")
             browser.close()

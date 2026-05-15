@@ -10,6 +10,9 @@ def get_database():
     if not connection_string:
         raise ValueError("MONGODB_URI puuttuu!")
     client = MongoClient(connection_string)
+    if not client:
+        raise ConnectionError("MongoDB-yhteyden muodostaminen epäonnistui!")
+    print("Yhdistetty MongoDB:hen onnistuneesti.")
     return client["mm-veikkaus"]
 
 def is_different(existing, new):

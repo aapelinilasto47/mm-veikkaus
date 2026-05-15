@@ -147,11 +147,7 @@ export default function Leaderboard({
                   return (
                     <tr
                       key={player.name}
-                      className={
-                        isMe
-                          ? "text-yellow-500 bg-yellow-500/5"
-                          : "text-gray-300"
-                      }
+                      className={isMe ? "text-yellow-500" : "text-gray-300"}
                     >
                       <td className="py-3 font-mono text-xs flex items-center gap-2">
                         {/* Tähti vain kirjautuneille ja muille kuin itselle */}
@@ -168,7 +164,7 @@ export default function Leaderboard({
                         {actualIndex + 1}.
                       </td>
                       <td className="py-3 font-bold truncate max-w-[120px]">
-                        {player.name.split("@")[0]} {isMe && "(Sinä)"}
+                        {player.name.split("@")[0]}
                       </td>
                       <td className="py-3 text-right text-xs">
                         🎯 {player.jackpots}

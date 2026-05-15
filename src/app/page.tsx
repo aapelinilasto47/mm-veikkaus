@@ -219,7 +219,6 @@ export default async function Home() {
                       <div className="bg-black/50 px-3 py-1 rounded-full text-lg sm:text-2xl font-mono font-bold text-yellow-500 border border-white/5">
                         {match.homeScore ?? "-"} : {match.awayScore ?? "-"}
                       </div>
-
                       {/* VAIHTUVA SISÄLTÖ: Pisteet TAI Status (Kellonaika/FINAL) */}
                       <div className="mt-2 h-5 sm:h-7 flex items-center justify-center">
                         {scoreDetails ? (

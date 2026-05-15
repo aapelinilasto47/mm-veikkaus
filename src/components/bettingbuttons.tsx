@@ -97,7 +97,7 @@ export default function BettingButtons({
       </div>
 
       {/* 3. LAAJENNETTU MUOKKAUSVALIKKO */}
-      {isOpen && !disabled && (
+      {isOpen && !disabled && session && (
         <div className="mt-4 w-full max-w-[260px] bg-gray-950 border border-gray-800 rounded-2xl p-5 shadow-2xl animate-in fade-in slide-in-from-top-2 duration-200">
           <div className="flex justify-between items-center mb-6">
             {/* Home Stepper */}
@@ -141,11 +141,7 @@ export default function BettingButtons({
             </div>
           </div>
 
-          {!session ? (
-            <div className="text-sm text-red-500 text-center">
-              <b>Kirjaudu sisään tallentaaksesi veikkauksesi!</b>
-            </div>
-          ) : (
+          {session && (
             <button
               onClick={handleSave}
               disabled={loading}
@@ -195,6 +191,11 @@ export default function BettingButtons({
           );
         })}
       </div>
+      {!session && (
+        <div className="mt-2 text-xs text-gray-500">
+          Kirjaudu sisään veikataksesi!
+        </div>
+      )}
     </div>
   );
 }
