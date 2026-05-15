@@ -183,7 +183,10 @@ export default async function Home() {
                   (p: any) => p.matchId === match._id,
                 );
 
-                const matchStartTime = new Date(match.startTime).getTime();
+                const matchDateString = match.startTime.includes("+")
+                  ? match.startTime
+                  : `${match.startTime}+03:00`;
+                const matchStartTime = new Date(matchDateString).getTime();
                 const isMatchStarted = matchStartTime <= nowServerTime;
 
                 let earnedPoints = 0;

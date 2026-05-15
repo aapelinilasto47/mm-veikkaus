@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import { set } from "mongoose";
 
 export default function BettingButtons({
   matchId,
@@ -33,6 +34,11 @@ export default function BettingButtons({
   const currentChoice = getChoice();
 
   const handleSave = async () => {
+    if (disabled) {
+      alert("Veikkaus on sulkeutunut tälle ottelulle.");
+      setIsOpen(false);
+      return;
+    }
     setLoading(true);
     try {
       await fetch("/api/predict", {
