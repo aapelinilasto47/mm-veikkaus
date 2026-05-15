@@ -41,11 +41,6 @@ export async function POST(request: Request) {
 
     const matchStartTime = new Date(formattedStartTime);
 
-    // Tulostetaan palvelimen lokiin, jotta näet terminaalista ajat
-    console.log(`Checking match ${match.home} vs ${match.away}`);
-    console.log(`Server time: ${now.toISOString()}`);
-    console.log(`Match start: ${matchStartTime.toISOString()}`);
-
     if (now >= matchStartTime) {
       return NextResponse.json(
         { success: false, error: "Cannot predict after match has started" },
