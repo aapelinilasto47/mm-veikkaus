@@ -55,10 +55,9 @@ export default function RulesAccordion() {
                 Tärkeää tietää
               </h4>
               <p className="text-xs leading-relaxed text-gray-400 italic">
-                Pisteiden laskeminen suoritetaan tällä hetkellä manuaalisesti,
-                joten pisteet päivittyvät otteluiden jälkeen viiveellä.
-                Tulevaisuudessa tavoitteena on automatisoida tämä prosessi,
-                jotta pisteet näkyisivät reaaliaikaisesti otteluiden päätyttyä.
+                Tulokset päivitetään puolen tunnin välein kello 16:00-00:30
+                välillä, joten pisteiden päivittyminen saattaa kestää hetken
+                otteluiden päättymisen jälkeen.
               </p>
             </div>
           </div>
