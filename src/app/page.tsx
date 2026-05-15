@@ -74,7 +74,11 @@ export default async function Home() {
   );
 
   const groupedMatches = matches.reduce((groups: any, match: any) => {
-    const d = new Date(match.startTime);
+    const d = new Date(
+      match.startTime.includes("+")
+        ? match.startTime
+        : `${match.startTime}+03:00`,
+    );
 
     // Viikonpäivä englanniksi (esim. Friday)
     const weekday = d.toLocaleDateString("fi-FI", { weekday: "long" });
@@ -246,15 +250,9 @@ export default async function Home() {
                             OHI
                           </span>
                         ) : (
-                          // Tapaus 3: Peli on vasta tulossa
+                          // Korvaa yllä oleva pätkä tällä:
                           <span className="text-xs sm:text-lg font-black text-blue-400">
-                            {new Date(match.startTime).toLocaleTimeString(
-                              "fi-FI",
-                              {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              },
-                            )}
+                            {match.startTime.split("T")[1].substring(0, 5)}
                           </span>
                         )}
                       </div>
