@@ -74,11 +74,7 @@ export default async function Home() {
   );
 
   const groupedMatches = matches.reduce((groups: any, match: any) => {
-    const d = new Date(
-      match.startTime.includes("+")
-        ? match.startTime
-        : `${match.startTime}+03:00`,
-    );
+    const d = new Date(match.startTime);
 
     // Viikonpäivä englanniksi (esim. Friday)
     const weekday = d.toLocaleDateString("fi-FI", { weekday: "long" });
