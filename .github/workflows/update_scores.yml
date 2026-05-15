@@ -29,7 +29,4 @@ jobs:
           # Lisää nämä GitHub Secretsiin!
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
         run: |
-          # Koska skriptisi kysyy (k/e), meidän täytyy pakottaa se hyväksymään muutokset
-          # Voit muuttaa skriptiäsi niin, että se hyväksyy automaattisesti --yes lipulla
-          # Tai putkittaa 'yes' komennon:
-          yes k | python movingdata.py
+          python scraping/movingdata.py
