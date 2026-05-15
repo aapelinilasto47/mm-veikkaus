@@ -29,8 +29,22 @@ export async function POST(request: Request) {
       );
     }
 
+    // --- TÄMÄ ON SE UUSI KOHTA ---
     const now = new Date();
-    const matchStartTime = new Date(match.startTime);
+    const startTimeStr = match.startTime.toString();
+
+    // Pakotetaan Suomen aikavyöhyke (+03:00), jos kanta ei sisällä aikavyöhyketietoa
+    const formattedStartTime =
+      startTimeStr.includes("+") || startTimeStr.includes("Z")
+        ? startTimeStr
+        : `${startTimeStr}+03:00`;
+
+    const matchStartTime = new Date(formattedStartTime);
+
+    // Tulostetaan palvelimen lokiin, jotta näet terminaalista ajat
+    console.log(`Checking match ${match.home} vs ${match.away}`);
+    console.log(`Server time: ${now.toISOString()}`);
+    console.log(`Match start: ${matchStartTime.toISOString()}`);
 
     if (now >= matchStartTime) {
       return NextResponse.json(
