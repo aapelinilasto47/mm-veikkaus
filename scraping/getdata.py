@@ -54,7 +54,7 @@ def scrape_fixtures():
             
             # Korjattu isPlayoff-tarkistus
             playoff_start = "2026-05-27T00:00:00" # MM-kisojen puolivälierät alkavat yleensä aiemmin
-            iso_time = clean_time.isoformat()
+            iso_time = clean_time.isoformat() + "+03:00"  # Oletetaan Suomen aika (UTC+3)
 
             fixtures.append({
                 "id": match_id,

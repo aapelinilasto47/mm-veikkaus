@@ -32,29 +32,25 @@ def update_database():
 
     # 1. FIXTURES-SILMUKKA
     for fixture in fixtures_list:
-        scraped_id = fixture.pop('id')
-        date_only = fixture['startTime'].split("T")[0]
+        existing_fix = matches_collection.find_one({"id": fixture["id"]})
 
-        existing_match = matches_collection.find_one({
-            "$or": [
-                {"home": fixture['home'], "away": fixture['away']},
-                {"home": fixture['away'], "away": fixture['home']}
-            ],
-            "startTime": {"$regex": f"^{date_only}"}
-        })
-
-        if existing_match:
-            if is_different(existing_match, fixture):
-                updates_to_run.append({
-                    "id": existing_match["_id"], "data": fixture, "type": "UPDATE",
-                    "desc": f"OTTELU MUUTTUNUT: {existing_match['home']} - {existing_match['away']}"
-                })
-        else:
-            fixture['_id'] = scraped_id
+    if existing_fix:
+        # PÄIVITETÄÄN VAIN KELLONAIKA (jos se on muuttunut oikeasti)
+        # Emme koske home/away kenttiin enää luonnin jälkeen!
+        if existing_fix.get('startTime') != fixture['startTime']:
             updates_to_run.append({
-                "id": scraped_id, "data": fixture, "type": "INSERT",
-                "desc": f"UUSI OTTELU: {fixture['home']} - {fixture['away']}"
+                "id": existing_fix["_id"], 
+                "data": {"startTime": fixture['startTime']}, # Päivitä vain aika
+                "type": "UPDATE_MATCH_TIME",
+                "desc": f"KELLOAIKA PÄIVITETTY: {existing_fix['home']} - {existing_fix['away']}"
             })
+    else:
+        # Vasta jos peliä ei ole lainkaan, lisätään se kokonaan
+        updates_to_run.append({
+            "data": fixture, 
+            "type": "INSERT_MATCH",
+            "desc": f"UUSI OTTELU LISÄTTY: {fixture['home']} - {fixture['away']}"
+        })
 
     # 2. RESULTS-SILMUKKA
     for result in results_list:
