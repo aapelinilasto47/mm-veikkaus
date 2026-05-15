@@ -13,7 +13,7 @@ export default async function Home() {
   await dbConnect();
 
   const matches = await Match.find({}).lean();
-  const now = new Date();
+  const nowServerTime = new Date().getTime();
 
   const session = await getServerSession();
 
@@ -183,7 +183,8 @@ export default async function Home() {
                   (p: any) => p.matchId === match._id,
                 );
 
-                const isMatchStarted = new Date(match.startTime) <= now;
+                const matchStartTime = new Date(match.startTime).getTime();
+                const isMatchStarted = matchStartTime <= nowServerTime;
 
                 let earnedPoints = 0;
                 let scoreDetails = null;
