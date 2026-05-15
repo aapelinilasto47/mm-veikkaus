@@ -25,11 +25,13 @@ def scrape_fixtures():
             unique_string = f"{home}_{away}_{date_only}"
             return hashlib.md5(unique_string.encode()).hexdigest()  # Luo MD5-hash uniikista merkkijonosta
 
+        
         for match in matches:
-            time.sleep(0.5)  # Pieni viive, jotta kaikki elementit latautuvat kunnolla
+            time.sleep(0.1)  # Pieni viive, jotta kaikki elementit latautuvat kunnolla
             home = match.query_selector(".event__homeParticipant").inner_text()
             away = match.query_selector(".event__awayParticipant").inner_text()
             time_raw = match.query_selector(".event__time").inner_text()
+            
 
             # Muutetaan muotoon 2026-05-07
             clean_time = datetime.strptime(f"{time_raw} {datetime.now().year}", "%d.%m. %H:%M %Y")
@@ -82,8 +84,8 @@ def scrape_results():
         # Odota ottelurivejä
         try:
             page.wait_for_selector(".event__match", timeout=10000)  # Odota enintään 10 sekuntia
-        except Exception as e:
-            print(f"Error waiting for match elements: {e}")
+        except:
+            print("No matches found on results page.")
             browser.close()
             return results
         
@@ -96,7 +98,7 @@ def scrape_results():
             return hashlib.md5(unique_string.encode()).hexdigest()  # Luo MD5-hash uniikista merkkijonosta
 
         for match in matches:
-            time.sleep(0.5)  # Pieni viive, jotta kaikki elementit latautuvat kunnolla
+            time.sleep(0.1)  # Pieni viive, jotta kaikki elementit latautuvat kunnolla
             home = match.query_selector(".event__homeParticipant").inner_text()
             away = match.query_selector(".event__awayParticipant").inner_text()
             date_raw = match.query_selector(".event__time").inner_text()
@@ -139,11 +141,12 @@ def scrape_results():
                 "home": home,
                 "homeScore": home_score,
                 "away": away,
-                "awayScore": away_score
+                "awayScore": away_score,
+                
             })
             match_count += 1
 
-            print(f"Scraped result: {home} vs {away} at {date_raw} (Home Score: {home_score}, Away Score: {away_score})")
+            print(f"Scraped result: {home} vs {away} at {day_part} (Home Score: {home_score}, Away Score: {away_score})")
 
         print(f"Found {match_count} results.")
         browser.close()

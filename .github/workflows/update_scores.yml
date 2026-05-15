@@ -2,7 +2,7 @@ name: MM-tulospäivitys
 
 on:
   schedule:
-    - cron: "0 * * * *" # Kerran tunnissa
+    - cron: "0 16,22 * * *" # 2 kertaa päivässä, joka päivä klo 16:00 ja 22:00 UTC (18:00 ja 00:00 Suomen aikaa)
   workflow_dispatch: # Mahdollistaa manuaalisen ajon
 
 jobs:
