@@ -34,23 +34,23 @@ def update_database():
     for fixture in fixtures_list:
         existing_fix = matches_collection.find_one({"id": fixture["id"]})
 
-    if existing_fix:
-        # PÄIVITETÄÄN VAIN KELLONAIKA (jos se on muuttunut oikeasti)
-        # Emme koske home/away kenttiin enää luonnin jälkeen!
-        if existing_fix.get('startTime') != fixture['startTime']:
+        if existing_fix:
+            # PÄIVITETÄÄN VAIN KELLONAIKA (jos se on muuttunut oikeasti)
+            # Emme koske home/away kenttiin enää luonnin jälkeen!
+            if existing_fix.get('startTime') != fixture['startTime']:
+                updates_to_run.append({
+                    "id": existing_fix["_id"], 
+                    "data": {"startTime": fixture['startTime']}, # Päivitä vain aika
+                    "type": "UPDATE_MATCH_TIME",
+                    "desc": f"KELLOAIKA PÄIVITETTY: {existing_fix['home']} - {existing_fix['away']}"
+                })
+        else:
+            # Vasta jos peliä ei ole lainkaan, lisätään se kokonaan
             updates_to_run.append({
-                "id": existing_fix["_id"], 
-                "data": {"startTime": fixture['startTime']}, # Päivitä vain aika
-                "type": "UPDATE_MATCH_TIME",
-                "desc": f"KELLOAIKA PÄIVITETTY: {existing_fix['home']} - {existing_fix['away']}"
+                "data": fixture, 
+                "type": "INSERT_MATCH",
+                "desc": f"UUSI OTTELU LISÄTTY: {fixture['home']} - {fixture['away']}"
             })
-    else:
-        # Vasta jos peliä ei ole lainkaan, lisätään se kokonaan
-        updates_to_run.append({
-            "data": fixture, 
-            "type": "INSERT_MATCH",
-            "desc": f"UUSI OTTELU LISÄTTY: {fixture['home']} - {fixture['away']}"
-        })
 
     # 2. RESULTS-SILMUKKA
     for result in results_list:
@@ -115,12 +115,19 @@ def update_database():
 
     if varmistus == 'k':
         for update in updates_to_run:
-            if update['type'] == "INSERT":
+            if update['type'] == 'INSERT_MATCH':
+                # Uuden ottelun lisäys
                 matches_collection.insert_one(update['data'])
-            else:
-                matches_collection.update_one({"_id": update['id']}, {"$set": update['data']})
-            print(f"DONE: {update['desc']}")
-        print("\nTietokanta päivitetty onnistuneesti!")
+                print(f"DONE: {update['desc']}")
+                
+            elif update['type'] in ['UPDATE_MATCH_TIME', 'UPDATE_RESULT']:
+                # Olemassa olevan ottelun päivitys
+                # HUOM: Käytetään update['id'], joka on MongoDB:n _id
+                matches_collection.update_one(
+                    {"_id": update['id']}, 
+                    {"$set": update['data']}
+                )
+                print(f"DONE: {update['desc']}")
     else:
         print("\nToiminto peruutettu.")
 
