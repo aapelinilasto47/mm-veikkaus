@@ -25,6 +25,8 @@ def update_database():
 
     # movingdata.py
 
+    processed_match_ids = set()  # Seuraa käsiteltyjä otteluita ID:llä
+
     for fixture in fixtures_list:
         # 1. ÄLYKÄS HAKU: Etsitään peliä nimillä molemmin päin ja päivämäärällä
         fixture_date = fixture['startTime'].split("T")[0]
@@ -37,6 +39,7 @@ def update_database():
         })
 
         if existing_fix:
+            processed_match_ids.add(existing_fix["_id"])  # Merkitään tämä ottelu käsitellyksi
             # PELI LÖYTYI! Emme koske ID:hen, jotta veikkaukset säilyvät.
             # Päivitetään vain kellonaika, jos se on muuttunut (esim. se 3h korjaus)
             if existing_fix.get('startTime') != fixture['startTime']:
@@ -46,14 +49,15 @@ def update_database():
                     "type": "UPDATE_MATCH_TIME",
                     "desc": f"KELLO KORJATTU: {existing_fix['home']} - {existing_fix['away']}"
                 })
-    else:
-        # Vasta jos nimilläkään ei löydy mitään, lisätään uusi peli
-        new_match = fixture.copy()
-        new_match["_id"] = new_match.pop("id")
-        updates_to_run.append({
-            "data": new_match, 
-            "type": "INSERT_MATCH",
-            "desc": f"TÄYSIN UUSI OTTELU: {new_match['home']} - {new_match['away']}"
+        else:
+            # Vasta jos nimilläkään ei löydy mitään, lisätään uusi peli
+            processed_match_ids.add(fixture['id'])  # Merkitään tämä uusi ottelu käsitellyksi
+            new_match = fixture.copy()
+            new_match["_id"] = new_match.pop("id")
+            updates_to_run.append({
+                "data": new_match, 
+                "type": "INSERT_MATCH",
+                "desc": f"TÄYSIN UUSI OTTELU: {new_match['home']} - {new_match['away']}"
         })
 
     # 2. RESULTS-SILMUKKA (Pidetään ennallaan, tämä on jo hyvä)

@@ -3,6 +3,7 @@ import time
 from datetime import datetime
 import json
 import hashlib
+import pytz
 
 
 def scrape_fixtures():
@@ -16,6 +17,9 @@ def scrape_fixtures():
         
         # Odota ottelurivejä
         page.wait_for_selector(".event__match", timeout=10000)  # Odota enintään 10 sekuntia
+
+        helsinki_tz = pytz.timezone('Europe/Helsinki')
+        now_in_helsinki = datetime.now(helsinki_tz)
         
         matches = page.query_selector_all(".event__match")
         match_count = 0
@@ -35,6 +39,8 @@ def scrape_fixtures():
 
             # Muutetaan muotoon 2026-05-07
             clean_time = datetime.strptime(f"{time_raw} {datetime.now().year}", "%d.%m. %H:%M %Y")
+            clean_time = helsinki_tz.localize(clean_time)  # Oletetaan, että aika on Helsingin aikaa
+            iso_time = clean_time.isoformat().split("+")[0]  # Ota vain ISO-osa ilman aikavyöhyketietoa
             match_id = generate_id(home, away, clean_time.isoformat())
 
             home_score = match.query_selector(".event__score--home")

@@ -21,7 +21,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install playwright pymongo dotenv
+          pip install playwright pymongo dotenv pytz
           playwright install chromium
 
       - name: Run update script
