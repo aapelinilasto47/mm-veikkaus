@@ -1,7 +1,7 @@
 {
   "fixtures": [
     {
-      "id": "ba6a22f9e014a54a545391369e371091",
+      "_id": "ba6a22f9e014a54a545391369e371091",
       "home": "Ruotsi",
       "homeScore": null,
       "away": "Kanada",
@@ -9,7 +9,7 @@
       "startTime": "2026-05-15T17:20:00"
     },
     {
-      "id": "e557681334929bd3048d71ac28682c85",
+      "_id": "e557681334929bd3048d71ac28682c85",
       "home": "Suomi",
       "homeScore": null,
       "away": "Saksa",
@@ -17,7 +17,7 @@
       "startTime": "2026-05-15T17:20:00"
     },
     {
-      "id": "5720512d8ae2a0f7adc673536eede642",
+      "_id": "5720512d8ae2a0f7adc673536eede642",
       "home": "Sveitsi",
       "homeScore": null,
       "away": "USA",
@@ -25,7 +25,7 @@
       "startTime": "2026-05-15T21:20:00"
     },
     {
-      "id": "e50659ee6727ce60ff134eb3cb10b284",
+      "_id": "e50659ee6727ce60ff134eb3cb10b284",
       "home": "Tanska",
       "homeScore": null,
       "away": "Tshekki",
@@ -33,7 +33,7 @@
       "startTime": "2026-05-15T21:20:00"
     },
     {
-      "id": "9f99afd1c1fc9a43a37362e3042d985c",
+      "_id": "9f99afd1c1fc9a43a37362e3042d985c",
       "home": "Itävalta",
       "homeScore": null,
       "away": "Iso-Britannia",
@@ -41,7 +41,7 @@
       "startTime": "2026-05-16T13:20:00"
     },
     {
-      "id": "bc535580be2ed7d28972b0f730815271",
+      "_id": "bc535580be2ed7d28972b0f730815271",
       "home": "Slovakia",
       "homeScore": null,
       "away": "Norja",
@@ -49,7 +49,7 @@
       "startTime": "2026-05-16T13:20:00"
     },
     {
-      "id": "a6106c59fd1385360c36561524fe656d",
+      "_id": "a6106c59fd1385360c36561524fe656d",
       "home": "Kanada",
       "homeScore": null,
       "away": "Italia",
@@ -57,7 +57,7 @@
       "startTime": "2026-05-16T17:20:00"
     },
     {
-      "id": "676ca221f4b758ef7354c207512416e8",
+      "_id": "676ca221f4b758ef7354c207512416e8",
       "home": "Suomi",
       "homeScore": null,
       "away": "Unkari",
@@ -65,7 +65,7 @@
       "startTime": "2026-05-16T17:20:00"
     },
     {
-      "id": "a50024f5cb0aa07c678b55e3e4ed1d26",
+      "_id": "a50024f5cb0aa07c678b55e3e4ed1d26",
       "home": "Slovenia",
       "homeScore": null,
       "away": "Tshekki",
@@ -73,7 +73,7 @@
       "startTime": "2026-05-16T21:20:00"
     },
     {
-      "id": "43fe1f750a04505e177e14981410c200",
+      "_id": "43fe1f750a04505e177e14981410c200",
       "home": "Sveitsi",
       "homeScore": null,
       "away": "Latvia",
@@ -81,7 +81,7 @@
       "startTime": "2026-05-16T21:20:00"
     },
     {
-      "id": "946a8bcf541a5f978df11348e95fbc74",
+      "_id": "946a8bcf541a5f978df11348e95fbc74",
       "home": "Italia",
       "homeScore": null,
       "away": "Slovakia",
@@ -89,7 +89,7 @@
       "startTime": "2026-05-17T13:20:00"
     },
     {
-      "id": "485fdcbb0da125397bd5372e3483078b",
+      "_id": "485fdcbb0da125397bd5372e3483078b",
       "home": "USA",
       "homeScore": null,
       "away": "Iso-Britannia",
@@ -97,7 +97,7 @@
       "startTime": "2026-05-17T13:20:00"
     },
     {
-      "id": "23cde2a798c826822008c10fe7d4c460",
+      "_id": "23cde2a798c826822008c10fe7d4c460",
       "home": "Itävalta",
       "homeScore": null,
       "away": "Unkari",
@@ -105,7 +105,7 @@
       "startTime": "2026-05-17T17:20:00"
     },
     {
-      "id": "19a36b3cbbc6edada3ed4b653b5900bd",
+      "_id": "19a36b3cbbc6edada3ed4b653b5900bd",
       "home": "Ruotsi",
       "homeScore": null,
       "away": "Tanska",
@@ -113,7 +113,7 @@
       "startTime": "2026-05-17T17:20:00"
     },
     {
-      "id": "b991032b41365f03226d5cd3b2b5fc18",
+      "_id": "b991032b41365f03226d5cd3b2b5fc18",
       "home": "Norja",
       "homeScore": null,
       "away": "Slovenia",
@@ -121,7 +121,7 @@
       "startTime": "2026-05-17T21:20:00"
     },
     {
-      "id": "35ce6902120b82b6e32dafb7bdedc4d6",
+      "_id": "35ce6902120b82b6e32dafb7bdedc4d6",
       "home": "Saksa",
       "homeScore": null,
       "away": "Latvia",
@@ -129,7 +129,7 @@
       "startTime": "2026-05-17T21:20:00"
     },
     {
-      "id": "8f708e1c26a7565510e985f882115e21",
+      "_id": "8f708e1c26a7565510e985f882115e21",
       "home": "Kanada",
       "homeScore": null,
       "away": "Tanska",
@@ -137,7 +137,7 @@
       "startTime": "2026-05-18T17:20:00"
     },
     {
-      "id": "17044b3ed824de6b426da27a27882d40",
+      "_id": "17044b3ed824de6b426da27a27882d40",
       "home": "Suomi",
       "homeScore": null,
       "away": "USA",
@@ -145,7 +145,7 @@
       "startTime": "2026-05-18T17:20:00"
     },
     {
-      "id": "ad1226745fe525b4fcaa2f8cec790296",
+      "_id": "ad1226745fe525b4fcaa2f8cec790296",
       "home": "Sveitsi",
       "homeScore": null,
       "away": "Saksa",
@@ -153,7 +153,7 @@
       "startTime": "2026-05-18T21:20:00"
     },
     {
-      "id": "1924722142fdf10fbc6a4fa68d10d5f3",
+      "_id": "1924722142fdf10fbc6a4fa68d10d5f3",
       "home": "Tshekki",
       "homeScore": null,
       "away": "Ruotsi",
@@ -161,7 +161,7 @@
       "startTime": "2026-05-18T21:20:00"
     },
     {
-      "id": "33fb08b9dc7fd8bcf8bbe40e605eff21",
+      "_id": "33fb08b9dc7fd8bcf8bbe40e605eff21",
       "home": "Italia",
       "homeScore": null,
       "away": "Norja",
@@ -169,7 +169,7 @@
       "startTime": "2026-05-19T17:20:00"
     },
     {
-      "id": "8fc2581d3338a40ad5aece80ab603e23",
+      "_id": "8fc2581d3338a40ad5aece80ab603e23",
       "home": "Latvia",
       "homeScore": null,
       "away": "Itävalta",
@@ -177,7 +177,7 @@
       "startTime": "2026-05-19T17:20:00"
     },
     {
-      "id": "46b9f9ec69b2f32d172a631aa7986082",
+      "_id": "46b9f9ec69b2f32d172a631aa7986082",
       "home": "Slovenia",
       "homeScore": null,
       "away": "Slovakia",
@@ -185,7 +185,7 @@
       "startTime": "2026-05-19T21:20:00"
     },
     {
-      "id": "4c49877b146e325f77cb3ac208abd024",
+      "_id": "4c49877b146e325f77cb3ac208abd024",
       "home": "Unkari",
       "homeScore": null,
       "away": "Iso-Britannia",
@@ -193,7 +193,7 @@
       "startTime": "2026-05-19T21:20:00"
     },
     {
-      "id": "8922af74810cfb02d196172b78527f16",
+      "_id": "8922af74810cfb02d196172b78527f16",
       "home": "Sveitsi",
       "homeScore": null,
       "away": "Itävalta",
@@ -201,7 +201,7 @@
       "startTime": "2026-05-20T17:20:00"
     },
     {
-      "id": "8c81c96cf7334c150a07f081e95ac8d2",
+      "_id": "8c81c96cf7334c150a07f081e95ac8d2",
       "home": "Tshekki",
       "homeScore": null,
       "away": "Italia",
@@ -209,7 +209,7 @@
       "startTime": "2026-05-20T17:20:00"
     },
     {
-      "id": "13d997bd7c46e4e86fb0b62fd6dd814b",
+      "_id": "13d997bd7c46e4e86fb0b62fd6dd814b",
       "home": "Ruotsi",
       "homeScore": null,
       "away": "Slovenia",
@@ -217,7 +217,7 @@
       "startTime": "2026-05-20T21:20:00"
     },
     {
-      "id": "dbea9b60c3c4abcd12b449d6215f504e",
+      "_id": "dbea9b60c3c4abcd12b449d6215f504e",
       "home": "USA",
       "homeScore": null,
       "away": "Saksa",
@@ -225,7 +225,7 @@
       "startTime": "2026-05-20T21:20:00"
     },
     {
-      "id": "ff4a78002d36af2a436b0175a651cd4c",
+      "_id": "ff4a78002d36af2a436b0175a651cd4c",
       "home": "Norja",
       "homeScore": null,
       "away": "Kanada",
@@ -233,7 +233,7 @@
       "startTime": "2026-05-21T17:20:00"
     },
     {
-      "id": "3ee3bc17479dc96630cf67cf3b83cbbb",
+      "_id": "3ee3bc17479dc96630cf67cf3b83cbbb",
       "home": "Suomi",
       "homeScore": null,
       "away": "Latvia",
@@ -241,7 +241,7 @@
       "startTime": "2026-05-21T17:20:00"
     },
     {
-      "id": "10041e4bd52e771416d4156109b7a48c",
+      "_id": "10041e4bd52e771416d4156109b7a48c",
       "home": "Sveitsi",
       "homeScore": null,
       "away": "Iso-Britannia",
@@ -249,7 +249,7 @@
       "startTime": "2026-05-21T21:20:00"
     },
     {
-      "id": "a6d259b8cb267a1fb2c5f2f5d5a41ad2",
+      "_id": "a6d259b8cb267a1fb2c5f2f5d5a41ad2",
       "home": "Tanska",
       "homeScore": null,
       "away": "Slovakia",
@@ -257,7 +257,7 @@
       "startTime": "2026-05-21T21:20:00"
     },
     {
-      "id": "ec5c0e201e84b84493b06f67318d2ee4",
+      "_id": "ec5c0e201e84b84493b06f67318d2ee4",
       "home": "Kanada",
       "homeScore": null,
       "away": "Slovenia",
@@ -265,7 +265,7 @@
       "startTime": "2026-05-22T17:20:00"
     },
     {
-      "id": "24b3fbed64acd8b9da4080e89e3c1a74",
+      "_id": "24b3fbed64acd8b9da4080e89e3c1a74",
       "home": "Unkari",
       "homeScore": null,
       "away": "Saksa",
@@ -273,7 +273,7 @@
       "startTime": "2026-05-22T17:20:00"
     },
     {
-      "id": "4ef1b980fa03d3ef5e2299475e120f82",
+      "_id": "4ef1b980fa03d3ef5e2299475e120f82",
       "home": "Italia",
       "homeScore": null,
       "away": "Ruotsi",
@@ -281,7 +281,7 @@
       "startTime": "2026-05-22T21:20:00"
     },
     {
-      "id": "b3431295ee65057ef7ff609951f7fb60",
+      "_id": "b3431295ee65057ef7ff609951f7fb60",
       "home": "Suomi",
       "homeScore": null,
       "away": "Iso-Britannia",
@@ -289,7 +289,7 @@
       "startTime": "2026-05-22T21:20:00"
     },
     {
-      "id": "e9a4300d708d21ec625eeb6ecf0d55fe",
+      "_id": "e9a4300d708d21ec625eeb6ecf0d55fe",
       "home": "Tanska",
       "homeScore": null,
       "away": "Slovenia",
@@ -297,7 +297,7 @@
       "startTime": "2026-05-23T13:20:00"
     },
     {
-      "id": "c95c5e0ca5223f8f2e7691e57075c3af",
+      "_id": "c95c5e0ca5223f8f2e7691e57075c3af",
       "home": "USA",
       "homeScore": null,
       "away": "Latvia",
@@ -305,7 +305,7 @@
       "startTime": "2026-05-23T13:20:00"
     },
     {
-      "id": "28edae3cac2399831e926bc44e615369",
+      "_id": "28edae3cac2399831e926bc44e615369",
       "home": "Slovakia",
       "homeScore": null,
       "away": "Tshekki",
@@ -313,7 +313,7 @@
       "startTime": "2026-05-23T17:20:00"
     },
     {
-      "id": "0a5388bb9e9f0de73eeb04970a4e28b9",
+      "_id": "0a5388bb9e9f0de73eeb04970a4e28b9",
       "home": "Sveitsi",
       "homeScore": null,
       "away": "Unkari",
@@ -321,7 +321,7 @@
       "startTime": "2026-05-23T17:20:00"
     },
     {
-      "id": "da1836e162ef4458918b8027aa59ff6e",
+      "_id": "da1836e162ef4458918b8027aa59ff6e",
       "home": "Ruotsi",
       "homeScore": null,
       "away": "Norja",
@@ -329,7 +329,7 @@
       "startTime": "2026-05-23T21:20:00"
     },
     {
-      "id": "fe1a4927d3815308e134cf3cd08c8658",
+      "_id": "fe1a4927d3815308e134cf3cd08c8658",
       "home": "Saksa",
       "homeScore": null,
       "away": "Itävalta",
@@ -337,7 +337,7 @@
       "startTime": "2026-05-23T21:20:00"
     },
     {
-      "id": "e253d66aa1b9a734ab5a083e618d8ba5",
+      "_id": "e253d66aa1b9a734ab5a083e618d8ba5",
       "home": "Latvia",
       "homeScore": null,
       "away": "Iso-Britannia",
@@ -345,7 +345,7 @@
       "startTime": "2026-05-24T17:20:00"
     },
     {
-      "id": "a8be366e9c7b15163bca39a0f3e0a2d6",
+      "_id": "a8be366e9c7b15163bca39a0f3e0a2d6",
       "home": "Tanska",
       "homeScore": null,
       "away": "Italia",
@@ -353,7 +353,7 @@
       "startTime": "2026-05-24T17:20:00"
     },
     {
-      "id": "a9ec7117de6392a7e0d549dad8a42843",
+      "_id": "a9ec7117de6392a7e0d549dad8a42843",
       "home": "Kanada",
       "homeScore": null,
       "away": "Slovakia",
@@ -361,7 +361,7 @@
       "startTime": "2026-05-24T21:20:00"
     },
     {
-      "id": "099558c271b9ff7957cf67cfeabce92b",
+      "_id": "099558c271b9ff7957cf67cfeabce92b",
       "home": "Suomi",
       "homeScore": null,
       "away": "Itävalta",
@@ -369,7 +369,7 @@
       "startTime": "2026-05-24T21:20:00"
     },
     {
-      "id": "d8a9353799ab82cb298ee51103377c1f",
+      "_id": "d8a9353799ab82cb298ee51103377c1f",
       "home": "Tshekki",
       "homeScore": null,
       "away": "Norja",
@@ -377,7 +377,7 @@
       "startTime": "2026-05-25T17:20:00"
     },
     {
-      "id": "331574d8545d9dda8bdbf94878907ee6",
+      "_id": "331574d8545d9dda8bdbf94878907ee6",
       "home": "USA",
       "homeScore": null,
       "away": "Unkari",
@@ -385,7 +385,7 @@
       "startTime": "2026-05-25T17:20:00"
     },
     {
-      "id": "ad23e8ad8c591b09e04fa68954044b8c",
+      "_id": "ad23e8ad8c591b09e04fa68954044b8c",
       "home": "Saksa",
       "homeScore": null,
       "away": "Iso-Britannia",
@@ -393,7 +393,7 @@
       "startTime": "2026-05-25T21:20:00"
     },
     {
-      "id": "2868eb90fe170ce50986f791c71c8616",
+      "_id": "2868eb90fe170ce50986f791c71c8616",
       "home": "Slovenia",
       "homeScore": null,
       "away": "Italia",
@@ -401,7 +401,7 @@
       "startTime": "2026-05-25T21:20:00"
     },
     {
-      "id": "31146ed99f0583af0eb1f17bd956e04c",
+      "_id": "31146ed99f0583af0eb1f17bd956e04c",
       "home": "Norja",
       "homeScore": null,
       "away": "Tanska",
@@ -409,7 +409,7 @@
       "startTime": "2026-05-26T13:20:00"
     },
     {
-      "id": "9b780723d6c1a9735c18077568849c12",
+      "_id": "9b780723d6c1a9735c18077568849c12",
       "home": "Unkari",
       "homeScore": null,
       "away": "Latvia",
@@ -417,7 +417,7 @@
       "startTime": "2026-05-26T13:20:00"
     },
     {
-      "id": "b2a9eb357545d2c83a429636db9e63e1",
+      "_id": "b2a9eb357545d2c83a429636db9e63e1",
       "home": "Slovakia",
       "homeScore": null,
       "away": "Ruotsi",
@@ -425,7 +425,7 @@
       "startTime": "2026-05-26T17:20:00"
     },
     {
-      "id": "192ffdf6cb1db19d998f43425716ad41",
+      "_id": "192ffdf6cb1db19d998f43425716ad41",
       "home": "USA",
       "homeScore": null,
       "away": "Itävalta",
@@ -433,7 +433,7 @@
       "startTime": "2026-05-26T17:20:00"
     },
     {
-      "id": "2c48167ff129e800b055a5323cc3bb85",
+      "_id": "2c48167ff129e800b055a5323cc3bb85",
       "home": "Sveitsi",
       "homeScore": null,
       "away": "Suomi",
@@ -441,7 +441,7 @@
       "startTime": "2026-05-26T21:20:00"
     },
     {
-      "id": "68f859039c4656a16e49b281b7ec2c8a",
+      "_id": "68f859039c4656a16e49b281b7ec2c8a",
       "home": "Tshekki",
       "homeScore": null,
       "away": "Kanada",

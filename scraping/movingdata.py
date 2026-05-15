@@ -7,60 +7,61 @@ load_dotenv()
 
 def get_database():
     connection_string = os.getenv("MONGODB_URI")
-    if not connection_string:
-        raise ValueError("MONGODB_URI puuttuu!")
     client = MongoClient(connection_string)
-    print("Yhdistetty MongoDB:hen onnistuneesti.")
     return client["mm-veikkaus"]
 
 def update_database():
     db = get_database()
     matches_collection = db["matches"]
 
-    print("--- Aloitetaan haku Flashscoresta ---")
+    print("--- Päivitys alkanut ---")
     fixtures_list = scrape_fixtures()
     results_list = scrape_results()
     
     updates_to_run = []
+    processed_ids = set()
 
-    # movingdata.py
-
-    processed_match_ids = set()  # Seuraa käsiteltyjä otteluita ID:llä
-
+    # 1. FIXTURES: Uudet pelit ja aikataulut
     for fixture in fixtures_list:
-        # 1. ÄLYKÄS HAKU: Etsitään peliä nimillä molemmin päin ja päivämäärällä
+        if fixture["id"] in processed_ids: continue
+        
         fixture_date = fixture['startTime'].split("T")[0]
+        
+        # NIMIPOHJAINEN HAKU: Estää duplikaatit jos järjestys vaihtuu
         existing_fix = matches_collection.find_one({
             "$or": [
-                {"home": fixture['home'], "away": fixture['away']},
-                {"home": fixture['away'], "away": fixture['home']}
-            ],
-            "startTime": {"$regex": f"^{fixture_date}"}
+                {"_id": fixture["id"]}, # Haku suoralla ID:llä
+                {
+                    "home": {"$in": [fixture['home'], fixture['away']]},
+                    "away": {"$in": [fixture['home'], fixture['away']]},
+                    "startTime": {"$regex": f"^{fixture_date}"}
+                }
+            ]
         })
 
         if existing_fix:
-            processed_match_ids.add(existing_fix["_id"])  # Merkitään tämä ottelu käsitellyksi
-            # PELI LÖYTYI! Emme koske ID:hen, jotta veikkaukset säilyvät.
-            # Päivitetään vain kellonaika, jos se on muuttunut (esim. se 3h korjaus)
-            if existing_fix.get('startTime') != fixture['startTime']:
+            processed_ids.add(existing_fix["_id"])
+            # Päivitetään vain kellonaika jos se on eri (varmistetaan "naive" muoto)
+            clean_time = fixture['startTime'].split("+")[0].split("Z")[0]
+            if existing_fix.get('startTime') != clean_time:
                 updates_to_run.append({
                     "id": existing_fix["_id"], 
-                    "data": {"startTime": fixture['startTime']},
-                    "type": "UPDATE_MATCH_TIME",
-                    "desc": f"KELLO KORJATTU: {existing_fix['home']} - {existing_fix['away']}"
+                    "data": {"startTime": clean_time},
+                    "type": "UPDATE",
+                    "desc": f"KELLO: {existing_fix['home']} - {existing_fix['away']}"
                 })
         else:
-            # Vasta jos nimilläkään ei löydy mitään, lisätään uusi peli
-            processed_match_ids.add(fixture['id'])  # Merkitään tämä uusi ottelu käsitellyksi
+            # Uusi peli (esim. Playoffit)
             new_match = fixture.copy()
             new_match["_id"] = new_match.pop("id")
+            processed_ids.add(new_match["_id"])
             updates_to_run.append({
                 "data": new_match, 
-                "type": "INSERT_MATCH",
-                "desc": f"TÄYSIN UUSI OTTELU: {new_match['home']} - {new_match['away']}"
-        })
+                "type": "INSERT",
+                "desc": f"UUSI: {new_match['home']} - {new_match['away']}"
+            })
 
-    # 2. RESULTS-SILMUKKA (Pidetään ennallaan, tämä on jo hyvä)
+    # 2. RESULTS: Tulosten päivitys
     for result in results_list:
         res_date = result['startTime'].split("T")[0]
         existing_res = matches_collection.find_one({
@@ -72,53 +73,42 @@ def update_database():
         })
 
         if existing_res:
+            # Kohdistetaan maalit oikein päin
             if existing_res['home'] == result['home']:
-                new_home_score = result['homeScore']
-                new_away_score = result['awayScore']
+                h, a = result['homeScore'], result['awayScore']
             else:
-                new_home_score = result['awayScore']
-                new_away_score = result['homeScore']
+                h, a = result['awayScore'], result['homeScore']
 
-            if (existing_res.get('homeScore') != new_home_score or 
-                existing_res.get('awayScore') != new_away_score):
-                
+            if (existing_res.get('homeScore') != h or existing_res.get('awayScore') != a):
                 updates_to_run.append({
                     "id": existing_res["_id"], 
-                    "data": {
-                        "homeScore": new_home_score, 
-                        "awayScore": new_away_score
-                    }, 
-                    "type": "UPDATE_RESULT",
-                    "desc": f"TULOS PÄIVITETTY: {existing_res['home']} {new_home_score}-{new_away_score} {existing_res['away']}"
+                    "data": {"homeScore": h, "awayScore": a}, 
+                    "type": "UPDATE",
+                    "desc": f"TULOS: {existing_res['home']} {h}-{a} {existing_res['away']}"
                 })
 
-    # --- SUORITUS ---
     if not updates_to_run:
-        print("\nKaikki tiedot ovat jo ajan tasalla. ✅")
+        print("Kaikki ajan tasalla. ✅")
         return
-
-    is_ci = os.getenv("GITHUB_ACTIONS") == "true"
-    print("\n" + "="*50)
-    print("SUUNNITELTUJEN MUUTOSTEN YHTEENVETO:")
-    for up in updates_to_run:
-        print(f"[{up['type']}] {up['desc']}")
+    print(f"\n[DRY RUN] Havaittu {len(updates_to_run)} muutosta, mutta mitään ei kirjoitettu kantaan.")
     print("="*50)
+    for up in updates_to_run:
+        print(f"SUUNNITELTU: [{up['type']}] {up['desc']}")
+        # Jos haluat nähdä tarkat tiedot mitä tallennettaisiin:
+        # print(f"DATA: {up['data']}") 
+    print("="*50)
+    print("\nTarkista yllä olevat muutokset. Jos ne näyttävät oikeilta (ID:t, kellonajat), poista TURVAMOODI.")
 
-    varmistus = 'k' if is_ci else input(f"\nHyväksytäänkö nämä {len(updates_to_run)} muutosta? (k/e): ").lower()
-
-    if varmistus == 'k':
-        for update in updates_to_run:
-            if update['type'] == 'INSERT_MATCH':
-                matches_collection.insert_one(update['data'])
-            elif update['type'] in ['UPDATE_MATCH_TIME', 'UPDATE_RESULT']:
-                matches_collection.update_one(
-                    {"_id": update['id']}, 
-                    {"$set": update['data']}
-                )
-            print(f"DONE: {update['desc']}")
-        print("\nTietokanta päivitetty onnistuneesti! 🚀")
-    else:
-        print("\nToiminto peruutettu.")
-
+    # KOMMENTOI VARSINAINEN TALLENNUS TOISTAISEKSI POIS:
+    """
+    is_ci = os.getenv("GITHUB_ACTIONS") == "true"
+    if is_ci or input(f"Hyväksytäänkö muutokset? (k/e): ").lower() == 'k':
+        for up in updates_to_run:
+            if up['type'] == 'INSERT':
+                matches_collection.insert_one(up['data'])
+            else:
+                matches_collection.update_one({"_id": up['id']}, {"$set": up['data']})
+            print(f"VALMIS: {up['desc']}")
+        """
 if __name__ == "__main__":
     update_database()
