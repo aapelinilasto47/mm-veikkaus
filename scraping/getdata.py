@@ -35,7 +35,7 @@ def scrape_fixtures():
             match_id = generate_id(home, away, iso_time)
 
             # Playoff-tunnistus (tarkista pvm kisoittain)
-            is_playoff = iso_time >= "2026-05-21T00:00:00"
+            is_playoff = iso_time >= "2026-05-27T00:00:00"
 
             fixtures.append({
                 "id": match_id,
