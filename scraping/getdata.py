@@ -115,6 +115,8 @@ def scrape_results():
             # Otetaan vain alkupää "05.05."
             day_part = date_raw.split(" ")[0] 
             clean_date = datetime.strptime(f"{day_part} {datetime.now().year}", "%d.%m. %Y")
+            iso_date_for_search = clean_date.strftime("%Y-%m-%d") + "T00:00:00"
+            
             
             # LUODAAN IDENTTINEN ID
             match_id = generate_id(home, away, clean_date.strftime("%Y-%m-%d"))
@@ -142,7 +144,8 @@ def scrape_results():
                 "homeScore": home_score,
                 "away": away,
                 "awayScore": away_score,
-                
+                "startTime": iso_date_for_search,
+
             })
             match_count += 1
 

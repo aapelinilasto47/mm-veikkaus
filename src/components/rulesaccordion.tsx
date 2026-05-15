@@ -55,13 +55,10 @@ export default function RulesAccordion() {
                 Tärkeää tietää
               </h4>
               <p className="text-xs leading-relaxed text-gray-400 italic">
-                Veikkaukset koskevat ottelun{" "}
-                <span className="text-gray-200 font-bold">
-                  varsinaista peliaikaa (60 min)
-                </span>
-                . Jatkoaikaa tai rangaistuslaukauskilpailua ei huomioida
-                tuloksessa. Jos ottelu päättyy 60 min jälkeen tasan, tulokseksi
-                merkitään tasapeli (X).
+                Pisteiden laskeminen suoritetaan tällä hetkellä manuaalisesti,
+                joten pisteet päivittyvät otteluiden jälkeen viiveellä.
+                Tulevaisuudessa tavoitteena on automatisoida tämä prosessi,
+                jotta pisteet näkyisivät reaaliaikaisesti otteluiden päätyttyä.
               </p>
             </div>
           </div>

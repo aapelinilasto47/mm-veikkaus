@@ -59,6 +59,7 @@ def update_database():
     # 2. RESULTS-SILMUKKA
     for result in results_list:
         res_date = result['startTime'].split("T")[0]
+        
         existing_res = matches_collection.find_one({
             "$or": [
                 {"home": result['home'], "away": result['away']},
@@ -68,21 +69,40 @@ def update_database():
         })
 
         if existing_res:
-            # Päivitetään vain jos tulos on eri kuin kannassa
-            if (existing_res.get('homeScore') != result['homeScore'] or 
-                existing_res.get('awayScore') != result['awayScore']):
+        # --- ÄLYKÄS MAALIEN KOHDISTUS ---
+        # Katsotaan kumpi on kotijoukkue tietokannassa ja valitaan maalit sen mukaan
+            if existing_res['home'] == result['home']:
+                # Järjestys on sama: Home=Home, Away=Away
+                new_home_score = result['homeScore']
+                new_away_score = result['awayScore']
+            else:
+                # Järjestys on kääntynyt: Tietokannan Home onkin skraappauksen Away
+                new_home_score = result['awayScore']
+                new_away_score = result['homeScore']
+                print(f"🔄 Järjestys kääntynyt ottelussa {existing_res['home']}-{existing_res['away']}. Korjataan maalit oikein päin.")
+
+            # Verrataan nyt näitä korjattuja maaleja tietokannan nykyisiin
+            if (existing_res.get('homeScore') != new_home_score or 
+                existing_res.get('awayScore') != new_away_score):
                 
                 updates_to_run.append({
                     "id": existing_res["_id"], 
-                    "data": {"homeScore": result['homeScore'], "awayScore": result['awayScore']}, 
+                    "data": {
+                        "homeScore": new_home_score, 
+                        "awayScore": new_away_score
+                    }, 
                     "type": "UPDATE_RESULT",
-                    "desc": f"TULOS PÄIVITETTY: {existing_res['home']} {result['homeScore']}-{result['awayScore']} {existing_res['away']}"
+                    "desc": f"TULOS PÄIVITETTY: {existing_res['home']} {new_home_score}-{new_away_score} {existing_res['away']}"
                 })
+        else:
+            print(f"HUOM: Ottelua ei löydy kannasta: {result['home']} vs {result['away']} ({result['homeScore']}-{result['awayScore']})")
 
     # --- HUMAN-IN-THE-LOOP & SUORITUS ---
     if not updates_to_run:
         print("\nKaikki tiedot ovat jo ajan tasalla. ✅")
         return
+
+    is_ci = os.getenv("GITHUB_ACTIONS") == "true"
 
     print("\n" + "="*50)
     print("SUUNNITELTUJEN MUUTOSTEN YHTEENVETO:")
@@ -90,8 +110,12 @@ def update_database():
         print(f"[{up['type']}] {up['desc']}")
     print("="*50)
 
+    if is_ci:
+        print("\nCI-ympäristössä, joten hyväksytään kaikki muutokset automaattisesti.")
+        varmistus = 'k'
     # Varmistus on paras vakuutus tässä vaiheessa
-    varmistus = input(f"\nHyväksytäänkö nämä {len(updates_to_run)} muutosta? (k/e): ").lower()
+    else:
+        varmistus = input(f"\nHyväksytäänkö nämä {len(updates_to_run)} muutosta? (k/e): ").lower()
 
     if varmistus == 'k':
         for update in updates_to_run:
@@ -100,9 +124,9 @@ def update_database():
             else:
                 matches_collection.update_one({"_id": update['id']}, {"$set": update['data']})
             print(f"DONE: {update['desc']}")
-        print("\nTietokanta päivitetty onnistuneesti! 🏒")
+        print("\nTietokanta päivitetty onnistuneesti!")
     else:
         print("\nToiminto peruutettu.")
 
-if __name__ == "__main__":
-    update_database()
+
+if __name__ == "__main__":    update_database()

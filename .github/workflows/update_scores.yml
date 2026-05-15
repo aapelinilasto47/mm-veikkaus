@@ -1,0 +1,35 @@
+name: Update World Cup Scores
+
+on:
+  schedule:
+    # GitHub käyttää UTC-aikaa. Suomi on UTC+3 (kesäisin).
+    # Suomen aikaan tämä tarkoittaa, että skripti ajetaan joka päivä klo 16:00, 16:30, 17:00, ..., 0:30.
+    - cron: "0,30 13-22 * * *"
+  workflow_dispatch: # Mahdollistaa ajon käsin GitHubin UI:sta
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          pip install playwright pymongo
+          playwright install chromium
+
+      - name: Run update script
+        env:
+          # Lisää nämä GitHub Secretsiin!
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        run: |
+          # Koska skriptisi kysyy (k/e), meidän täytyy pakottaa se hyväksymään muutokset
+          # Voit muuttaa skriptiäsi niin, että se hyväksyy automaattisesti --yes lipulla
+          # Tai putkittaa 'yes' komennon:
+          yes k | python movingdata.py
