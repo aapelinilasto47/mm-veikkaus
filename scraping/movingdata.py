@@ -23,36 +23,42 @@ def update_database():
     
     updates_to_run = []
 
-    # 1. FIXTURES-SILMUKKA (Uudet ottelut ja aikataulumuutokset)
+    # movingdata.py
+
     for fixture in fixtures_list:
-        # TÄRKEÄÄ: Haetaan hashilla suoraan _id-kentästä
-        existing_fix = matches_collection.find_one({"_id": fixture["id"]})
+        # 1. ÄLYKÄS HAKU: Etsitään peliä nimillä molemmin päin ja päivämäärällä
+        fixture_date = fixture['startTime'].split("T")[0]
+        existing_fix = matches_collection.find_one({
+            "$or": [
+                {"home": fixture['home'], "away": fixture['away']},
+                {"home": fixture['away'], "away": fixture['home']}
+            ],
+            "startTime": {"$regex": f"^{fixture_date}"}
+        })
 
         if existing_fix:
-            # Päivitetään vain kellonaika, jos se on muuttunut
+            # PELI LÖYTYI! Emme koske ID:hen, jotta veikkaukset säilyvät.
+            # Päivitetään vain kellonaika, jos se on muuttunut (esim. se 3h korjaus)
             if existing_fix.get('startTime') != fixture['startTime']:
                 updates_to_run.append({
                     "id": existing_fix["_id"], 
                     "data": {"startTime": fixture['startTime']},
                     "type": "UPDATE_MATCH_TIME",
-                    "desc": f"KELLOAIKA PÄIVITETTY: {existing_fix['home']} - {existing_fix['away']}"
+                    "desc": f"KELLO KORJATTU: {existing_fix['home']} - {existing_fix['away']}"
                 })
-        else:
-            # Uusi ottelu: siirretään 'id' -> '_id' jotta kanta pysyy siistinä
-            new_match = fixture.copy()
-            new_match["_id"] = new_match.pop("id")
-            
-            updates_to_run.append({
-                "data": new_match, 
-                "type": "INSERT_MATCH",
-                "desc": f"UUSI OTTELU LISÄTTY: {new_match['home']} - {new_match['away']}"
-            })
+    else:
+        # Vasta jos nimilläkään ei löydy mitään, lisätään uusi peli
+        new_match = fixture.copy()
+        new_match["_id"] = new_match.pop("id")
+        updates_to_run.append({
+            "data": new_match, 
+            "type": "INSERT_MATCH",
+            "desc": f"TÄYSIN UUSI OTTELU: {new_match['home']} - {new_match['away']}"
+        })
 
-    # 2. RESULTS-SILMUKKA (Tulosten päivitys)
+    # 2. RESULTS-SILMUKKA (Pidetään ennallaan, tämä on jo hyvä)
     for result in results_list:
         res_date = result['startTime'].split("T")[0]
-        
-        # Tuloshaku on joustava (Home/Away swap-suoja)
         existing_res = matches_collection.find_one({
             "$or": [
                 {"home": result['home'], "away": result['away']},
@@ -62,7 +68,6 @@ def update_database():
         })
 
         if existing_res:
-            # Kohdistetaan maalit oikein päin riippumatta Flashscoren järjestyksestä
             if existing_res['home'] == result['home']:
                 new_home_score = result['homeScore']
                 new_away_score = result['awayScore']
