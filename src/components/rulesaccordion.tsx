@@ -55,9 +55,11 @@ export default function RulesAccordion() {
                 Tärkeää tietää
               </h4>
               <p className="text-xs leading-relaxed text-gray-400 italic">
-                Tulokset päivitetään puolen tunnin välein kello 16:00-00:30
-                välillä, joten pisteiden päivittyminen saattaa kestää hetken
-                otteluiden päättymisen jälkeen.
+                Tällä hetkellä otteluiden lopputulokset haetaan manuaalisesti,
+                joten pisteet saattavat päivittyä viiveellä. Pyrimme
+                automatisoimaan prosessin tulevaisuudessa, mutta toistaiseksi
+                tämä on varmin ja turvallisin ratkaisu. Kiitos
+                kärsivällisyydestä!
               </p>
             </div>
           </div>
