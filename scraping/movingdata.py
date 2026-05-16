@@ -100,7 +100,7 @@ def update_database():
     print("\nTarkista yllä olevat muutokset. Jos ne näyttävät oikeilta (ID:t, kellonajat), poista TURVAMOODI.")
 
     # KOMMENTOI VARSINAINEN TALLENNUS TOISTAISEKSI POIS:
-    """
+    '''
     is_ci = os.getenv("GITHUB_ACTIONS") == "true"
     if is_ci or input(f"Hyväksytäänkö muutokset? (k/e): ").lower() == 'k':
         for up in updates_to_run:
@@ -109,6 +109,6 @@ def update_database():
             else:
                 matches_collection.update_one({"_id": up['id']}, {"$set": up['data']})
             print(f"VALMIS: {up['desc']}")
-        """
+        '''
 if __name__ == "__main__":
     update_database()
