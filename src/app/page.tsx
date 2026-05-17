@@ -232,7 +232,7 @@ export default async function Home() {
                               earnedPoints === 10
                                 ? "text-rose-500 animate-pulse"
                                 : earnedPoints >= 5
-                                  ? "text-emerald-500"
+                                  ? "text-teal-500"
                                   : earnedPoints >= 3
                                     ? "text-emerald-500"
                                     : "text-gray-500"
