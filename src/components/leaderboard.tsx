@@ -49,6 +49,19 @@ export default function Leaderboard({
     return matchesSearch && matchesFollow;
   });
 
+  const maskEmail = (email: string) => {
+    if (!email) return "";
+    // Otetaan vain osa ennen @-merkkiä siltä varalta, että jollain on pääte mukana
+    const namePart = email.split("@")[0];
+    const firstName = namePart.split(".")[0]; // Jaetaan pisteellä, jos sellainen on
+
+    if (firstName.length <= 8) {
+      return firstName; // Näytä kokonaan, jos 8 tai vähemmän merkkiä
+    }
+    // Näytetään vain 8 ensimmäistä kirjainta, jos enemmän
+    return firstName.substring(0, 8);
+  };
+
   return (
     <div className="max-w-3xl mx-auto mb-8">
       <details className="group bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-2xl">
@@ -164,7 +177,7 @@ export default function Leaderboard({
                         {actualIndex + 1}.
                       </td>
                       <td className="py-3 font-bold truncate max-w-[120px]">
-                        {player.name.split("@")[0]}
+                        {maskEmail(player.name)}
                       </td>
                       <td className="py-3 text-right text-xs">
                         🎯 {player.jackpots}
