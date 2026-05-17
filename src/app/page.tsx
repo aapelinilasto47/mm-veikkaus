@@ -9,6 +9,8 @@ import { calculateMatchPoints } from "../lib/scoreCalculator";
 import RulesAccordion from "../components/rulesaccordion";
 import Leaderboard from "../components/leaderboard";
 
+export const dynamic = "force-dynamic"; // Tämä varmistaa, että data haetaan joka ikiselle pyynnölle eikä vain build-vaiheessa
+
 export default async function Home() {
   await dbConnect();
 
@@ -20,9 +22,6 @@ export default async function Home() {
   const userPredictions = await Prediction.find({
     userId: session?.user?.email,
   }).lean();
-
-  console.log("Fetched matches from database:", matches);
-  console.log("Fetched user predictions from database:", userPredictions);
 
   // 1. Haetaan KAIKKI päättyneet ottelut ja KAIKKI veikkaukset
   const allMatches = await Match.find({}).lean();
@@ -265,6 +264,7 @@ export default async function Home() {
                           userPrediction ? userPrediction.awayScore : null
                         }
                         disabled={isMatchStarted}
+                        startTimeStr={match.startTime}
                       />
                     </div>
 
