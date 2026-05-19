@@ -54,12 +54,14 @@ export default function Leaderboard({
     // Otetaan vain osa ennen @-merkkiä siltä varalta, että jollain on pääte mukana
     const namePart = email.split("@")[0];
     const firstName = namePart.split(".")[0]; // Jaetaan pisteellä, jos sellainen on
+    const firstNameCapitalized =
+      firstName.charAt(0).toUpperCase() + firstName.slice(1); // Iso alkukirjain
 
     if (firstName.length <= 8) {
-      return firstName; // Näytä kokonaan, jos 8 tai vähemmän merkkiä
+      return firstNameCapitalized; // Näytä kokonaan, jos 8 tai vähemmän merkkiä
     }
     // Näytetään vain 8 ensimmäistä kirjainta, jos enemmän
-    return firstName.substring(0, 8);
+    return firstNameCapitalized.substring(0, 8);
   };
 
   return (

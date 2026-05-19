@@ -72,7 +72,11 @@ export default async function Home() {
     (a, b) => b.points - a.points || b.jackpots - a.jackpots,
   );
 
-  const groupedMatches = matches.reduce((groups: any, match: any) => {
+  const sortedMatches = matches.sort(
+    (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime(),
+  );
+
+  const groupedMatches = sortedMatches.reduce((groups: any, match: any) => {
     const d = new Date(match.startTime);
 
     // Viikonpäivä englanniksi (esim. Friday)
