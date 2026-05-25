@@ -53,4 +53,23 @@ _Pudotuspelit:_ Pudotuspeleissä panokset kovenevat ja pisteet tuplataan (esim. 
 
 ---
 
+## 🚀 Käyttöönotto kehittäjille
+
+Asenna riippuvuudet:
+
+Bash
+npm install
+
+Määritä ympäristömuuttujat luomalla kansion juureen .env.local (syötä MONGODB_URI, NEXTAUTH_SECRET sekä Googlen OAuth-avaimet).
+
+Aja kehitysympäristö:
+
+Bash
+npm run dev
+
+Käännä tuotantoversio:
+
+Bash
+npm run build
+
 Kehittäjä: Aapeli Nilasto – IT-tradenomiopiskelija, joka innostuu hienojen ideoiden viemisestä valmiiksi, tuotantovarmiksi tuotteiksi saumattomalla UX-suunnittelulla.
