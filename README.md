@@ -1,64 +1,56 @@
-## 🏒 IIHF World Championship Prediction Platform 2026
+## IIHF World Championship Prediction Platform 2026
 
 Vie MM-kisaelämys uudelle tasolle kisaamalla kavereita vastaan ilmaisessa lätkäveikkauksessa!
 Tämä on täyden pinon (Full-stack) verkkosovellus vuoden 2026 jääkiekon MM-kisoja varten. Sovelluksen avulla lätkäfanit voivat kisata keskenään veikkaamalla otteluiden lopputuloksia.
 
-https://mm-veikkaus.vercel.app/
+Projekti syntyi aidosta tarpeesta: kun perinteistä ilmaista MM-lätkäveikkausta ei tänä vuonna enää virallisesti järjestetty, päätin pelastaa kaveriporukkamme vuosien perinteen ja koodata meille oman alustan. Sovellus pyörii parhaillaan tuotannossa aktiivisella testiporukalla.
 
-## 🛠 Tekninen arkkitehtuuri
+🔗 **Live-versio:** https://mm-veikkaus.vercel.app/
 
-Sovellus on rakennettu modernilla Next.js 14+ -kehityskehyksellä, ja se hyödyntää Server Components -rakennetta tehokkaaseen datan käsittelyyn.
+---
 
-Frontend: React & Tailwind CSS – Responsiivinen käyttöliittymä on optimoitu mobiiliin, jotta veikkaukset voi jättää vaivatta vaikkapa hallin katsomosta.
+## Tekninen arkkitehtuuri
 
-Backend: Next.js API Routes (Serverless) – Hoitaa veikkausten tallennuksen ja validointiin liittyvän logiikan.
+Sovellus on rakennettu modernilla Next.js 14+ -kehityskehyksellä hyödyntäen TypeScriptiä ja tehokasta palvelinrakennetta.
 
-Tietokanta: MongoDB Atlas – Skaalautuva pilvitietokanta ottelu- ja käyttäjädatan säilytykseen.
+- **Frontend:** React, Tailwind CSS – Responsiivinen ja dynaaminen käyttöliittymä, joka on optimoitu täysin mobiiliin (veikkaukset voi jättää vaikkapa hallin katsomosta).
+- **Backend:** Next.js API Routes (Serverless) – Hoitaa veikkausten tallennuksen, sessionhallinnan ja palvelintason validoinnit.
+- **Tietokanta:** MongoDB Atlas – Pilvitietokanta ottelu- ja käyttäjädatan säilytykseen. Yhteyskäytännöissä hyödynnetään globaalia välimuistia (connection pooling), mikä takaa skaalautuvuuden serverless-ympäristössä.
+- **Autentikaatio:** NextAuth.js (Google OAuth 2.0) – Turvallinen ja nopea kirjautuminen suoraan Google-tunnuksilla.
 
-Autentikaatio: NextAuth.js (Google OAuth 2.0) – Turvallinen ja nopea kirjautuminen ilman erillisten salasanojen hallintaa.
+---
 
-## 📊 Datan hallinta ja automatisointi
+## Automaatio ja datan hallinta (DevOps)
 
-Turnausdatan hallinta on ratkaistu erillisellä Python-pohjaisella data-pipelinellä, joka varmistaa, että sovelluksen tiedot pysyvät ajan tasalla ilman manuaalista työtä.
+Turnausdatan hallinta ja tulosten päivitys on täysin automatisoitu, jotta sovellus pyörii itsenäisesti tuotannossa läpi kisojen:
 
-Batch Processing: Otteluohjelma ja tulokset synkronoidaan kerran vuorokaudessa eräajona. Tämä takaa datan eheyden ja vähentää turhaa palvelinkuormaa.
+- **CI/CD & CI-automaatio:** GitHub Actions ajaa tulosten päivitysrutiinit automaattisesti kerran tunnissa.
+- **Scraping-logiikka:** Taustalla pyörivä Playwright-skripti hakee viralliset tulokset livenä, minkä jälkeen kantaan päivitetään vain tarvittavat kentät (`$set`).
+- **Vikasietoisuus (Robustness):** Koska virallisen turnauskaavion muuttuessa pelkkä sokea ID-hashaus voi luoda duplikaatteja, backend-logiikka käyttää älykästä nimipohjaista varmistuskerrosta ($or-haut). Tämä suojaa olemassa olevaa dataa ja pelaajien veikkauksia kaikissa tilanteissa.
 
-Idempotentti päivitys: Ottelut tunnistetaan uniikeilla hash-tunnisteilla (joukkueet + päivämäärä). Tämä estää duplikaatit, vaikka synkronointi ajettaisiin useasti.
+---
 
-Scraping-logiikka: Python-skriptit (Playwright/BeautifulSoup) hakevat viralliset tulokset ja päivittävät vain tarvittavat kentät ($set), jolloin otteluiden metadata, kuten alkamisajat, säilyy muuttumattomana.
+## Tietoturva ja reilu peli
 
-## 🏆 Kisamekaniikka ja säännöt
+Sovelluksen arkkitehtuurissa on panostettu tiukasti tietoturvaan ja fuskauksen estämiseen:
 
-Pistelaskenta noudattaa "reilun pelin" henkeä ja palkitsee erityisesti tarkkuudesta:
+- **Palvelintason aikalukko:** Veikkaaminen sulkeutuu automaattisesti kunkin ottelun virallisella alkamishetkellä. Validointi tapahtuu tiukasti palvelimella (`startTime`-tarkistus), mikä estää pyyntöjen manipuloinnin (esim. Postmanilla tai selaimen dev-työkaluilla) pelin jo alettua.
+- **Identiteetin varmistus:** API-reitit eivät luota selaimen lähettämään käyttäjä-ID:hen. Käyttäjän identiteetti varmistetaan palvelimella suoraan kryptografisesti allekirjoitetusta HttpOnly-istuntoevästeestä (`getServerSession`).
+- **Yksityisyys (GDPR):** Käyttäjien sähköpostiosoitteita tai herkkiä tietoja ei näytetä julkisesti. Tulostaulukko parsii ja anonymisoi sähköpostit automaattisesti siisteiksi etunimiksi (esim. `firstname.lastname@gmail.com` -> `Firstname`).
 
-10 pistettä: Täysosuma (Jackpot 🎯) – Maalit täsmälleen oikein.
+---
 
-5 pistettä: Oikea voittaja ja oikea maaliero.
+## Kisamekaniikka ja säännöt
 
-3 pistettä: Oikea voittaja (1X2-tulos).
+Pistelaskenta palkitsee erityisesti tarkkuudesta:
 
-Tasapelisääntö: Jos pisteet ovat tasan, "täysosumien" (Jackpot) määrä ratkaisee sijoituksen leaderboardilla.
+- **10 pistettä:** Täysosuma (Jackpot 🎯) – Maalit täsmälleen oikein.
+- **5 pistettä:** Oikea voittaja ja oikea maaliero.
+- **3 pistettä:** Oikea voittaja (1X2-tulos).
 
-Pudotuspelit: Pudotuspeleissä pisteet tuplataan! Esim. Täysosuma - 20 pistettä.
+_Tasapelisääntö:_ Jos pisteet ovat tasan, "täysosumien" (Jackpot) määrä ratkaisee sijoituksen leaderboardilla.
+_Pudotuspelit:_ Pudotuspeleissä panokset kovenevat ja pisteet tuplataan (esim. Täysosuma = 20 pistettä).
 
-## 🔒 Turvallisuus: "Pelit alkavat ajallaan"
+---
 
-Sovelluksessa on sisäänrakennettu aikatarkistus:
-
-Veikkaaminen sulkeutuu automaattisesti kunkin ottelun virallisella alkamishetkellä.
-
-Validointi tapahtuu palvelintasolla (startTime-tarkistus), mikä estää veikkausten muokkaamisen pelin jo alettua.
-
-## 🚀 Käyttöönotto kehittäjille
-
-npm install – Asenna riippuvuudet.
-
-Määritä .env.local – Syötä MongoDB-osoite ja Google API-avaimet.
-
-npm run build – Käännä tuotantoversio.
-
-python getdata.py - Hae ottelut ja tulokset.
-
-python movingdata.py – Päivitä ottelut ja tulokset.
-
-Kehittäjä: Aapeli Nilasto – IT-tradenomi ja lätkäfani, joka haluaa ratkaista monimutkaiset data-haasteet siistillä koodilla ja hyvällä UX-suunnittelulla.
+Kehittäjä: Aapeli Nilasto – IT-tradenomiopiskelija, joka innostuu hienojen ideoiden viemisestä valmiiksi, tuotantovarmiksi tuotteiksi saumattomalla UX-suunnittelulla.
