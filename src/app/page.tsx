@@ -330,12 +330,15 @@ export default async function Home() {
                 ▼
               </span>
             </summary>
-            <div className="p-4 bg-black/10 border-t border-gray-950">
+            <div className="p-4 bg-black/10 border-t border-gray-900/50">
               {pastDays.reverse().map((date) => renderDaySection(date))}
-              <div className="mt-4 pt-4 border-t border-gray-900/50 flex justify-center">
-                <summary className="list-none cursor-pointer bg-gray-800/60 hover:bg-gray-700/80 text-gray-400 hover:text-white px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-colors flex items-center gap-2">
-                  ▲ Sulje menneet ottelut
-                </summary>
+              <div className="mt-1 pt-1 border-t border-gray-900/50 flex justify-center">
+                <a
+                  href="#top"
+                  className="text-sm text-blue-400 hover:text-blue-300 uppercase tracking-widest"
+                >
+                  Takaisin ylös
+                </a>
               </div>
             </div>
           </details>
