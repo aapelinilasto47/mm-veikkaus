@@ -3,8 +3,8 @@ name: Update World Cup Scores
 on:
   schedule:
     # GitHub käyttää UTC-aikaa. Suomi on UTC+3 (kesäisin).
-    # Tämä skripti ajetaan joka päivä kerran tunnissa klo 9:22 - 22:22 UTC-aikaa, mikä vastaa klo 12:22 - 01:22 Suomen aikaa.
-    - cron: "22 9-22 * * *" # Aja joka päivä kerran tunnissaklo 9:22 - 22:22 UTC-aikaa (12:22-01:22 Suomen aikaa)
+    # Tämä skripti ajetaan joka päivä 4 kertaa: klo 12:22, 15:22, 18:22 ja 21:22 UTC-aikaa, mikä vastaa 15:22, 18:22, 21:22 ja 00:22 Suomen aikaa.
+    - cron: "22 12,15,18,21 * * *" # Aja joka päivä klo 12:22, 15:22, 18:22 ja 21:22 UTC-aikaa
   workflow_dispatch: # Mahdollistaa ajon käsin GitHubin UI:sta
 
 jobs:

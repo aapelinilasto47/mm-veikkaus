@@ -338,7 +338,7 @@ export default async function Home() {
               </span>
             </summary>
 
-            {/* Se äsken tehty siisti tumma sisältöalue pysyy täysin ennallaan... */}
+            {/* MENNEET OTTELUT HAITARIN SISÄLTÖNÄ */}
             <div className="pt-6 pb-4 bg-gray-950/50 grid gap-3">
               {[...pastDays].reverse().map((date) => renderDaySection(date))}
 
