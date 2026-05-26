@@ -333,6 +333,9 @@ export default async function Home() {
                   Piilota menneet ottelut
                 </span>
               </div>
+              <span className="text-gray-500 group-open:rotate-180 transition-transform">
+                ▼
+              </span>
             </summary>
 
             {/* Se äsken tehty siisti tumma sisältöalue pysyy täysin ennallaan... */}
