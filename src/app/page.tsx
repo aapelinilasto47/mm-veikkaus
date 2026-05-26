@@ -128,7 +128,7 @@ export default async function Home() {
   const renderDaySection = (date: string) => (
     <section key={date} className="mb-10">
       <h2
-        className={`text-xl font-bold mb-4 border-b border-gray-800 pb-2 capitalize ${
+        className={`text-xl font-bold mb-4 mx-4 border-b border-gray-800 pb-2 capitalize ${
           date.startsWith("Tänään")
             ? "text-yellow-400 font-black animate-pulse"
             : "text-gray-300"
@@ -318,21 +318,28 @@ export default async function Home() {
       <div className="max-w-3xl mx-auto">
         {/* MENNEET OTTELUT KOOTTUNA YHDEN HAITARIN ALLE */}
         {pastDays.length > 0 && (
-          <details className="group bg-gray-900/20 border border-gray-800 rounded-2xl mb-8 overflow-hidden shadow-xl">
-            <summary className="list-none p-4 cursor-pointer flex justify-between items-center bg-gray-900/40 hover:bg-gray-900/60 transition-colors">
+          <details className="group bg-gray-900 rounded-2xl mb-8 overflow-hidden shadow-xl">
+            <summary className="list-none p-4 cursor-pointer flex justify-between items-center bg-gray-900/40 hover:bg-gray-900/60 transition-colors select-none">
               <div className="flex items-center gap-3">
                 <span className="text-xl">📁</span>
-                <span className="font-black uppercase tracking-wider text-sm text-gray-400">
+
+                {/* TEKSTI 1: Näkyy vain kun haitari on SULJETTU */}
+                <span className="font-black uppercase tracking-wider text-sm text-gray-400 group-open:hidden">
                   Näytä menneet ottelut
                 </span>
+
+                {/* TEKSTI 2: Näkyy vain kun haitari on AVATTU */}
+                <span className="font-black uppercase tracking-wider text-sm text-yellow-500/80 hidden group-open:inline">
+                  Piilota menneet ottelut
+                </span>
               </div>
-              <span className="text-gray-500 group-open:rotate-180 transition-transform text-sm">
-                ▼
-              </span>
             </summary>
-            <div className="p-4 bg-black/10 border-t border-gray-900/50">
-              {pastDays.reverse().map((date) => renderDaySection(date))}
-              <div className="mt-1 pt-1 border-t border-gray-900/50 flex justify-center">
+
+            {/* Se äsken tehty siisti tumma sisältöalue pysyy täysin ennallaan... */}
+            <div className="pt-6 pb-4 bg-gray-950/50 grid gap-3">
+              {[...pastDays].reverse().map((date) => renderDaySection(date))}
+
+              <div className="flex justify-center">
                 <a
                   href="#top"
                   className="text-sm text-blue-400 hover:text-blue-300 uppercase tracking-widest"
