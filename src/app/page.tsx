@@ -166,6 +166,26 @@ export default async function Home() {
             earnedPoints = scoreDetails.points;
           }
 
+          let pointColorClass = "text-gray-500"; // Oletusväri, jos ottelu ei ole alkanut
+
+          if (match.isPlayoff) {
+            if (earnedPoints === 20) {
+              pointColorClass = "text-rose-500 animate-pulse";
+            } else if (earnedPoints >= 10) {
+              pointColorClass = "text-teal-500";
+            } else if (earnedPoints >= 6) {
+              pointColorClass = "text-emerald-500";
+            }
+          } else {
+            if (earnedPoints === 10) {
+              pointColorClass = "text-rose-500 animate-pulse";
+            } else if (earnedPoints >= 5) {
+              pointColorClass = "text-teal-500";
+            } else if (earnedPoints >= 3) {
+              pointColorClass = "text-emerald-500";
+            }
+          }
+
           return (
             <div
               key={match._id}
@@ -191,15 +211,7 @@ export default async function Home() {
                 <div className="mt-2 h-5 sm:h-7 flex items-center justify-center">
                   {scoreDetails ? (
                     <span
-                      className={`text-sm sm:text-lg font-black uppercase tracking-widest px-2 py-0.5 rounded-md ${
-                        earnedPoints === 10
-                          ? "text-rose-500 animate-pulse"
-                          : earnedPoints >= 5
-                            ? "text-teal-500"
-                            : earnedPoints >= 3
-                              ? "text-emerald-500"
-                              : "text-gray-500"
-                      }`}
+                      className={`text-sm sm:text-lg font-black uppercase tracking-widest px-2 py-0.5 rounded-md ${pointColorClass}`}
                     >
                       +{earnedPoints} PTS
                     </span>
