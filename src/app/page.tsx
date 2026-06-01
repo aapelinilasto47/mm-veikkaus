@@ -286,10 +286,12 @@ export default async function Home({ searchParams }: HomeProps) {
             ? "Futiksen MM-veikkaus 2026"
             : "Lätkän MM-veikkaus 2026"}
         </h1>
-        <span className="px-2 py-0.5 bg-blue-500/20 text-blue-400 text-[10px] font-bold rounded border border-blue-500/30 uppercase tracking-widest">
-          {activeTournament === "futis_2026" ? "Early Access" : "Beta"}
+
+        <span className="text-sm text-blue-400 uppercase tracking-widest font-bold bg-blue-900/30 px-2 py-1 rounded mt-3 inline-block">
+          Beta
         </span>
-        <div className="h-1 w-24 bg-blue-500 mx-auto mt-4 mb-4 rounded-full"></div>
+
+        <div className="h-1 w-24 bg-blue-300 mx-auto mt-6 mb-6 rounded-full"></div>
 
         {/* MUUTOS: Turnauksen vaihtopainike (Arkisto / Palaa takaisin) */}
         <div className="mb-8">
@@ -303,11 +305,8 @@ export default async function Home({ searchParams }: HomeProps) {
           </a>
         </div>
 
-        <h2 className="text-lg mb-10 font-black text-transparent bg-clip-text bg-white uppercase tracking-tighter">
-          Veikkaa otteluiden tuloksia ja kilpaile ystäviesi kanssa!
-        </h2>
         {session && sortedLeaderboard.length > 0 && (
-          <div className="mb-6 p-4 bg-blue-500/10 border border-blue-500/20 rounded text-center">
+          <div className="mb-8 p-4 bg-blue-500/10 border border-blue-500/20 rounded text-center">
             <p className="text-blue-300 text-sm uppercase tracking-widest font-bold">
               Olet tällä hetkellä sijalla <br></br>
               <span className="text-yellow-400 font-black text-lg">
@@ -320,32 +319,11 @@ export default async function Home({ searchParams }: HomeProps) {
           </div>
         )}
 
-        <div className="flex flex-col items-center mb-8">
-          <a
-            href="https://github.com/aapelinilasto47/mm-veikkaus"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-sm bg-gray-800 px-3 py-1 rounded hover:bg-gray-700 transition-colors font-black uppercase tracking-widest"
-          >
-            <span>GitHub</span>
-          </a>
-        </div>
-
         <div className="max-w-3xl mx-auto mb-8">
           <Leaderboard
             sortedLeaderboard={JSON.parse(JSON.stringify(sortedLeaderboard))}
             currentUserEmail={session?.user?.email}
           />
-        </div>
-        <div className="w-full bg-amber-950/30 border border-amber-900/50 p-3 rounded-lg mb-6 flex items-center gap-3">
-          <span className="text-xl">⚠️</span>
-          <p className="text-xs md:text-sm text-amber-200/80 leading-relaxed">
-            <span className="font-bold text-amber-400 uppercase">Huom:</span>{" "}
-            Sovellus on vielä kehitysvaiheessa. Tulosten päivityksessä ja
-            pistelaskennassa saattaa esiintyä viiveitä tai epätarkkuuksia
-            testauksen aikana. Pahoittelemme mahdollisia häiriöitä ja kiitämme
-            kärsivällisyydestä!
-          </p>
         </div>
       </header>
 
@@ -388,6 +366,26 @@ export default async function Home({ searchParams }: HomeProps) {
             Kaikki turnauksen ottelut on pelattu! Katso tulokset ylhäältä.
           </p>
         )}
+        <div className="w-full bg-amber-950/30 border border-amber-900/50 p-3 rounded-lg mb-6 flex items-center gap-3">
+          <span className="text-xl">⚠️</span>
+          <p className="text-xs md:text-sm text-amber-200/80 leading-relaxed">
+            <span className="font-bold text-amber-400 uppercase">Huom:</span>{" "}
+            Sovellus on vielä kehitysvaiheessa. Tulosten päivityksessä ja
+            pistelaskennassa saattaa esiintyä viiveitä tai epätarkkuuksia
+            testauksen aikana. Pahoittelemme mahdollisia häiriöitä ja kiitämme
+            kärsivällisyydestä!
+          </p>
+        </div>
+        <div className="flex flex-col items-center mb-8">
+          <a
+            href="https://github.com/aapelinilasto47/mm-veikkaus"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-sm bg-gray-800 px-3 py-1 rounded hover:bg-gray-700 transition-colors font-black uppercase tracking-widest"
+          >
+            <span>GitHub</span>
+          </a>
+        </div>
       </div>
     </div>
   );
