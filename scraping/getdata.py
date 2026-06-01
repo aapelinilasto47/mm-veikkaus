@@ -18,7 +18,11 @@ def scrape_fixtures():
         page = context.new_page()
         page.goto("https://www.flashscore.fi/jaakiekko/maailma/mm-kisat/otteluohjelma/")
         
-        page.wait_for_selector(".event__match", timeout=10000)
+        try:
+            page.wait_for_selector(".event__match", timeout=5000)
+        except:
+            print("Otteluohjelman elementtejä ei löytynyt. Tarkista sivun rakenne tai aikakatkaisu.")
+            return []
         matches = page.query_selector_all(".event__match")
         
         for match in matches:
@@ -59,7 +63,9 @@ def scrape_results():
         page.goto("https://www.flashscore.fi/jaakiekko/maailma/mm-kisat/tulokset/")
         
         try: page.wait_for_selector(".event__match", timeout=5000)
-        except: return []
+        except:
+            print("Tulosten elementtejä ei löytynyt. Tarkista sivun rakenne tai aikakatkaisu.")
+            return []
         
         matches = page.query_selector_all(".event__match")
         
