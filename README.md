@@ -1,21 +1,20 @@
-## IIHF World Championship Prediction Platform 2026
+# Multi-Tournament Prediction Platform 2026
 
-Vie MM-kisaelämys uudelle tasolle kisaamalla kavereita vastaan ilmaisessa lätkäveikkauksessa!
-Tämä on täyden pinon (Full-stack) verkkosovellus vuoden 2026 jääkiekon MM-kisoja varten. Sovelluksen avulla lätkäfanit voivat kisata keskenään veikkaamalla otteluiden lopputuloksia.
+Vie urheiluelämys uudelle tasolle kisaamalla kavereita vastaan ilmaisessa urheilu- ja kisaveikkauksessa! Tämä on moderni täyden pinon (Full-stack) verkkosovellus, joka tukee dynaamisesti eri arvokisoja (kuten vuoden 2026 Jalkapallon ja Jääkiekon MM-kisoja). Sovelluksen avulla urheilufanit voivat kisata keskenään veikkaamalla otteluiden lopputuloksia.
 
-Projekti syntyi aidosta tarpeesta: kun perinteistä ilmaista MM-lätkäveikkausta ei tänä vuonna enää virallisesti järjestetty, päätin pelastaa kaveriporukkamme vuosien perinteen ja koodata meille oman alustan. Sovellus pyörii parhaillaan tuotannossa aktiivisella testiporukalla.
+Projekti syntyi aidosta tarpeesta: kun perinteisiä ilmaisia MM-kisaveikkauksia ei enää virallisesti järjestetty, päätin pelastaa kaveriporukkamme vuosien perinteen ja koodata meille oman, laajennettavan alustan. Sovellus pyörii tuotannossa aktiivisella testiporukalla ja vaihtaa turnausta lennosta URL-parametrin mukaan.
 
-🔗 **Live-versio:** https://mm-veikkaus.vercel.app/
+🔗 Live-versio: https://mm-veikkaus.vercel.app/
 
 ---
 
 ## Tekninen arkkitehtuuri
 
-Sovellus on rakennettu modernilla Next.js 14+ -kehityskehyksellä hyödyntäen TypeScriptiä ja tehokasta palvelinrakennetta.
+Sovellus on rakennettu modernilla Next.js 14+ -kehityskehyksellä (App Router) hyödyntäen TypeScriptiä ja tehokasta palvelinrakennetta (Server Components).
 
-- **Frontend:** React, Tailwind CSS – Responsiivinen ja dynaaminen käyttöliittymä, joka on optimoitu täysin mobiiliin (veikkaukset voi jättää vaikkapa hallin katsomosta).
-- **Backend:** Next.js API Routes (Serverless) – Hoitaa veikkausten tallennuksen, sessionhallinnan ja palvelintason validoinnit.
-- **Tietokanta:** MongoDB Atlas – Pilvitietokanta ottelu- ja käyttäjädatan säilytykseen. Yhteyskäytännöissä hyödynnetään globaalia välimuistia (connection pooling), mikä takaa skaalautuvuuden serverless-ympäristössä.
+- **Frontend:** React, Tailwind CSS – Responsiivinen ja dynaaminen käyttöliittymä, joka on optimoitu täysin mobiiliin (veikkaukset voi jättää vaikkapa suoraan kisakatsomosta).
+- **Backend:** Next.js API Routes (Serverless) & Server Actions – Hoitaa veikkausten tallennuksen, dynaamisen reitityksen, sessionhallinnan ja palvelintason validoinnit.
+- **Tietokanta:** MongoDB Atlas – Pilvitietokanta ottelu-, veikkaus- ja käyttäjädatan säilytykseen. Yhteyskäytännöissä hyödynnetään globaalia välimuistia (connection pooling), mikä takaa skaalautuvuuden serverless-ympäristössä.
 - **Autentikaatio:** NextAuth.js (Google OAuth 2.0) – Turvallinen ja nopea kirjautuminen suoraan Google-tunnuksilla.
 
 ---
@@ -24,52 +23,61 @@ Sovellus on rakennettu modernilla Next.js 14+ -kehityskehyksellä hyödyntäen T
 
 Turnausdatan hallinta ja tulosten päivitys on täysin automatisoitu, jotta sovellus pyörii itsenäisesti tuotannossa läpi kisojen:
 
-- **CI/CD & CI-automaatio:** GitHub Actions ajaa tulosten päivitysrutiinit automaattisesti kerran tunnissa.
-- **Scraping-logiikka:** Taustalla pyörivä Playwright-skripti hakee viralliset tulokset livenä, minkä jälkeen kantaan päivitetään vain tarvittavat kentät (`$set`).
-- **Vikasietoisuus (Robustness):** Koska virallisen turnauskaavion muuttuessa pelkkä sokea ID-hashaus voi luoda duplikaatteja, backend-logiikka käyttää älykästä nimipohjaista varmistuskerrosta ($or-haut). Tämä suojaa olemassa olevaa dataa ja pelaajien veikkauksia kaikissa tilanteissa.
+- **CI/CD & Automaatio:** GitHub Actions ajaa tulosten päivitysrutiinit automaattisesti kerran tunnissa.
+- **Scraping-logiikka:** Taustalla pyörivä Playwright-skripti hakee viralliset tulokset livenä, minkä jälkeen kantaan päivitetään vain muuttuneet kentät (`$set`).
+- **Vikasietoisuus (Robustness):** Koska virallisen turnauskaavion muuttuessa pelkkä sokea ID-hashaus voi luoda duplikaatteja, backend-logiikka käyttää älykästä nimipohjaista varmistuskerrosta (`$or`-haut). Tämä suojaa olemassa olevaa dataa ja pelaajien veikkauksia kaikissa tilanteissa.
 
 ---
 
 ## Tietoturva ja reilu peli
 
-Sovelluksen arkkitehtuurissa on panostettu tiukasti tietoturvaan ja fuskauksen estämiseen:
+Sovelluksen arkkitehtuurissa on panostettu tiukasti tietoturvaan, fuskauksen estämiseen sekä GDPR-yksityisyyteen:
 
 - **Palvelintason aikalukko:** Veikkaaminen sulkeutuu automaattisesti kunkin ottelun virallisella alkamishetkellä. Validointi tapahtuu tiukasti palvelimella (`startTime`-tarkistus), mikä estää pyyntöjen manipuloinnin (esim. Postmanilla tai selaimen dev-työkaluilla) pelin jo alettua.
 - **Identiteetin varmistus:** API-reitit eivät luota selaimen lähettämään käyttäjä-ID:hen. Käyttäjän identiteetti varmistetaan palvelimella suoraan kryptografisesti allekirjoitetusta HttpOnly-istuntoevästeestä (`getServerSession`).
-- **Yksityisyys (GDPR):** Käyttäjien sähköpostiosoitteita tai herkkiä tietoja ei näytetä julkisesti. Tulostaulukko parsii ja anonymisoi sähköpostit automaattisesti siisteiksi etunimiksi (esim. `firstname.lastname@gmail.com` -> `Firstname`).
+- **Anonymiteetti ja tietosuoja:** Käyttäjien sähköpostiosoitteita ei koskaan näytetä julkisesti muille pelaajille. Sovelluksessa on integroitu **nimimerkkijärjestelmä**, jonka avulla käyttäjä voi suoraan profiilinurkkauksestaan asettaa itselleen julkisen nimimerkin tulostaulukkoon. Syötteet sanitoidaan tiukasti (RegEx-suodatus NoSQL-injektioita ja XSS-hyökkäyksiä vastaan).
 
 ---
 
 ## Kisamekaniikka ja säännöt
 
-Pistelaskenta palkitsee erityisesti tarkkuudesta:
+Pistelaskenta mukautuu lennosta valitun turnauksen sääntöjen mukaan ja palkitsee tarkkuudesta:
+
+### Jääkiekon MM-veikkaus
 
 - **10 pistettä:** Täysosuma (Jackpot 🎯) – Maalit täsmälleen oikein.
-- **5 pistettä:** Oikea voittaja ja oikea maaliero.
+- **5 pistettä:** Oikea voittaja ja Jackpot maalin päässä.
 - **3 pistettä:** Oikea voittaja (1X2-tulos).
 
-_Tasapelisääntö:_ Jos pisteet ovat tasan, "täysosumien" (Jackpot) määrä ratkaisee sijoituksen leaderboardilla.
-_Pudotuspelit:_ Pudotuspeleissä panokset kovenevat ja pisteet tuplataan (esim. Täysosuma = 20 pistettä).
+- _Pudotuspelit:_ Panokset kovenevat ja pisteet tuplataan (esim. Täysosuma = 20 pistettä).
+
+### Jalkapallon MM-veikkaus
+
+- **6 pistettä:** Täysosuma (Jackpot 🎯) – Maalit täsmälleen oikein.
+- **4 pistettä:** Oikea voittaja ja Jackpot maalin päässä.
+- **3 pistettä:** Oikea voittaja (1X2-tulos).
+
+**Tasapelisääntö:** Jos kokonaispisteet ovat tasan, "täysosumien" (Jackpot) määrä ratkaisee korkeamman sijoituksen leaderboardilla.
 
 ---
 
-## 🚀 Käyttöönotto kehittäjille
+## Käyttöönotto kehittäjille
 
 Asenna riippuvuudet:
-
-Bash
 npm install
 
-Määritä ympäristömuuttujat luomalla kansion juureen .env.local (syötä MONGODB_URI, NEXTAUTH_SECRET sekä Googlen OAuth-avaimet).
+Ympäristömuuttujat: Luo kansion juureen .env.local -tiedosto ja määritä seuraavat muuttujat:
+
+MONGODB_URI=your_mongodb_connection_string
+NEXTAUTH_SECRET=your_nextauth_secret
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+NEXTAUTH_URL=http://localhost:3000
 
 Aja kehitysympäristö:
-
-Bash
 npm run dev
 
 Käännä tuotantoversio:
-
-Bash
 npm run build
 
-Kehittäjä: Aapeli Nilasto – IT-tradenomiopiskelija, joka innostuu hienojen ideoiden viemisestä valmiiksi, tuotantovarmiksi tuotteiksi saumattomalla UX-suunnittelulla.
+**Kehittäjä: Aapeli Nilasto – Business Information Technology (IT-tradenomi) -opiskelija Laurea-ammattikorkeakoulussa. Intohimona full-stack-kehitys, automaatio sekä ideoiden vieminen valmiiksi, tuotantovarmiksi tuotteiksi**
