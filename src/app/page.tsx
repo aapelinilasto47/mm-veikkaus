@@ -325,6 +325,16 @@ export default async function Home({ searchParams }: HomeProps) {
             currentUserEmail={session?.user?.email}
           />
         </div>
+        <div className="w-full bg-amber-950/30 border border-amber-900/50 p-3 rounded-lg mb-6 flex items-center gap-3">
+          <span className="text-xl">⚠️</span>
+          <p className="text-xs md:text-sm text-amber-200/80 leading-relaxed">
+            <span className="font-bold text-amber-400 uppercase">Huom:</span>{" "}
+            Sovellus on vielä kehitysvaiheessa. Tulosten päivityksessä ja
+            pistelaskennassa saattaa esiintyä viiveitä tai epätarkkuuksia
+            testauksen aikana. Pahoittelemme mahdollisia häiriöitä ja kiitämme
+            kärsivällisyydestä!
+          </p>
+        </div>
       </header>
 
       <div className="max-w-3xl mx-auto">
@@ -366,16 +376,7 @@ export default async function Home({ searchParams }: HomeProps) {
             Kaikki turnauksen ottelut on pelattu! Katso tulokset ylhäältä.
           </p>
         )}
-        <div className="w-full bg-amber-950/30 border border-amber-900/50 p-3 rounded-lg mb-6 flex items-center gap-3">
-          <span className="text-xl">⚠️</span>
-          <p className="text-xs md:text-sm text-amber-200/80 leading-relaxed">
-            <span className="font-bold text-amber-400 uppercase">Huom:</span>{" "}
-            Sovellus on vielä kehitysvaiheessa. Tulosten päivityksessä ja
-            pistelaskennassa saattaa esiintyä viiveitä tai epätarkkuuksia
-            testauksen aikana. Pahoittelemme mahdollisia häiriöitä ja kiitämme
-            kärsivällisyydestä!
-          </p>
-        </div>
+
         <div className="flex flex-col items-center mb-8">
           <a
             href="https://github.com/aapelinilasto47/mm-veikkaus"
