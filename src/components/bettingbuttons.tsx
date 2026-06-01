@@ -123,11 +123,11 @@ export default function BettingButtons({
           }`}
         >
           {hasPrediction ? (
-            <span className="text-sm font-mono font-bold text-white-500 tracking-widest">
+            <span className="text-sm sm:text-lg font-mono font-bold text-white-500 tracking-widest">
               {homeScore} : {awayScore}
             </span>
           ) : (
-            <span className="text-[10px] text-gray-200 uppercase font-black tracking">
+            <span className="text-[10px] sm:text-sm text-gray-200 uppercase font-black tracking">
               {disabled ? "Sulkeutunut" : "Veikkaa"}
             </span>
           )}
@@ -188,16 +188,14 @@ export default function BettingButtons({
             <button
               onClick={handleSave}
               disabled={loading}
-              className={`w-full py-3 px-4 rounded-lg font-black uppercase tracking-tighter transition-all ${
-                isSaved
-                  ? "bg-emerald-600 text-white"
-                  : "bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/40 active:scale-95"
+              className={`w-full py-1 px-2 rounded-lg font-black uppercase text-[12px] sm:text-md text-center tracking-tighter transition-all ${
+                isSaved ? "text-white" : "text-white hover:bg-gray-700"
               }`}
             >
               {loading
                 ? "Tallennetaan..."
                 : isSaved
-                  ? "Tallennettu! ✓"
+                  ? "Tallennettu!"
                   : "Tallenna"}
             </button>
           )}
@@ -227,7 +225,7 @@ export default function BettingButtons({
           return (
             <div
               key={choice}
-              className={`w-10 h-10 rounded-lg border flex items-center justify-center font-black text-lg transition-all duration-300 ${activeClass}`}
+              className={`w-10 h-8 sm:w-12 sm:h-12 rounded-lg border flex items-center justify-center font-black text-lg transition-all duration-300 ${activeClass}`}
             >
               {choice}
             </div>

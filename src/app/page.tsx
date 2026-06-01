@@ -173,7 +173,6 @@ export default async function Home({ searchParams }: HomeProps) {
             match.awayScore !== null &&
             userPrediction
           ) {
-            // MUUTOS: Välitetään turnausnimi myös korttien pistelaskuun
             scoreDetails = calculateMatchPoints(
               match.homeScore,
               match.awayScore,
@@ -185,7 +184,6 @@ export default async function Home({ searchParams }: HomeProps) {
             earnedPoints = scoreDetails.points;
           }
 
-          // MUUTOS: Päivitetty värikoodit vastaamaan futiksen uutta (6/4/3) pisteytystä lennosta
           let pointColorClass = "text-gray-500";
           const maxPoints =
             activeTournament === "lätkä_2026" ? (match.isPlayoff ? 20 : 10) : 6;
@@ -207,28 +205,30 @@ export default async function Home({ searchParams }: HomeProps) {
               key={match._id.toString()}
               className="bg-gray-900 p-3 sm:p-5 rounded-xl border border-gray-800 flex justify-between items-center hover:border-gray-600 transition-colors shadow-xl overflow-hidden"
             >
-              <div className="flex-1 text-right font-bold text-md sm:text-2xl truncate px-1">
+              {/* KOTIJOUKKUE: Lukittu 30% leveys mobiilissa siirtymien estämiseksi */}
+              <div className="w-[30%] sm:flex-1 text-center font-bold text-sm sm:text-2xl whitespace-normal break-words sm:truncate px-1">
                 {match.home}
               </div>
 
-              <div className="flex flex-col items-center min-w-[110px] sm:min-w-[140px] px-2 mt-1">
+              {/* KESKIOSA: Tuloslaatikko ja napit pysyvät nyt jämptisti keskellä */}
+              <div className="flex flex-col items-center min-w-[125px] sm:min-w-[140px] px-1 mt-1">
                 <div className="flex items-center flex-col bg-gray-800 border border-gray-700 rounded-lg px-2 py-1">
-                  <div className="text-xs sm:text-sm text-gray-500 uppercase tracking-widest py-1.5">
+                  <div className="text-[9px] sm:text-sm text-gray-500 uppercase tracking-widest py-1">
                     Lopputulos
                   </div>
-                  <div className="bg-black/50 px-3 py-1.5 rounded-full text-lg sm:text-2xl font-mono font-bold text-yellow-500 border border-white/5">
+                  <div className="bg-black/50 px-3 py-1 rounded-full text-md sm:text-2xl font-mono font-bold text-yellow-500 border border-white/5">
                     {match.homeScore ?? "-"} : {match.awayScore ?? "-"}
                   </div>
                 </div>
                 <div className="mt-2 h-5 sm:h-7 flex items-center justify-center">
                   {scoreDetails ? (
                     <span
-                      className={`text-sm sm:text-lg font-black uppercase tracking-widest px-2 py-0.5 rounded-md ${pointColorClass}`}
+                      className={`text-xs sm:text-lg font-black uppercase tracking-widest px-2 py-0.5 rounded-md ${pointColorClass}`}
                     >
                       +{earnedPoints} PTS
                     </span>
                   ) : match.homeScore !== null ? (
-                    <span className="text-xs sm:text-lg font-black text-gray-500 uppercase tracking-widest">
+                    <span className="text-[10px] sm:text-lg font-black text-gray-500 uppercase tracking-widest">
                       OHI
                     </span>
                   ) : (
@@ -253,7 +253,8 @@ export default async function Home({ searchParams }: HomeProps) {
                 />
               </div>
 
-              <div className="flex-1 text-left font-bold text-md sm:text-2xl truncate px-1">
+              {/* VIERASJOUKKUE: Lukittu 30% leveys mobiilissa siirtymien estämiseksi */}
+              <div className="w-[30%] sm:flex-1 text-center font-bold text-sm sm:text-2xl whitespace-normal break-words sm:truncate px-1">
                 {match.away}
               </div>
             </div>
@@ -329,16 +330,6 @@ export default async function Home({ searchParams }: HomeProps) {
             currentUserEmail={session?.user?.email}
           />
         </div>
-        <div className="w-full bg-amber-950/30 border border-amber-900/50 p-3 rounded-lg mb-6 flex items-center gap-3">
-          <span className="text-xl">⚠️</span>
-          <p className="text-xs md:text-sm text-amber-200/80 leading-relaxed">
-            <span className="font-bold text-amber-400 uppercase">Huom:</span>{" "}
-            Sovellus on vielä kehitysvaiheessa. Tulosten päivityksessä ja
-            pistelaskennassa saattaa esiintyä viiveitä tai epätarkkuuksia
-            testauksen aikana. Pahoittelemme mahdollisia häiriöitä ja kiitämme
-            kärsivällisyydestä!
-          </p>
-        </div>
       </header>
 
       <div className="max-w-3xl mx-auto">
@@ -372,6 +363,17 @@ export default async function Home({ searchParams }: HomeProps) {
             </div>
           </details>
         )}
+
+        <div className="w-full bg-amber-950/30 border border-amber-900/50 p-3 rounded-lg mb-6 flex items-center gap-3">
+          <span className="text-xl">⚠️</span>
+          <p className="text-xs md:text-sm text-amber-200/80 leading-relaxed">
+            <span className="font-bold text-amber-400 uppercase">Huom:</span>{" "}
+            Sovellus on vielä kehitysvaiheessa. Tulosten päivityksessä ja
+            pistelaskennassa saattaa esiintyä viiveitä tai epätarkkuuksia
+            testauksen aikana. Pahoittelemme mahdollisia häiriöitä ja kiitämme
+            kärsivällisyydestä!
+          </p>
+        </div>
 
         {activeDays.map((date) => renderDaySection(date))}
 
