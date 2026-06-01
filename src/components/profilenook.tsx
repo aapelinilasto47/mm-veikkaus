@@ -41,7 +41,7 @@ export default function ProfileNook({
       <UsernameEditor
         currentUsername={currentUsername}
         isOpen={isDropdownOpen}
-        setIsOpen={setIsDropdownOpen}
+        setIsOpenAction={setIsDropdownOpen}
       />
     </div>
   );

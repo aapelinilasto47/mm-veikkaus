@@ -6,11 +6,11 @@ import { useRouter } from "next/navigation";
 export default function UsernameEditor({
   currentUsername,
   isOpen,
-  setIsOpen,
+  setIsOpenAction,
 }: {
   currentUsername?: string;
   isOpen: boolean;
-  setIsOpen: (open: boolean) => void;
+  setIsOpenAction: (open: boolean) => void;
 }) {
   const [inputName, setInputName] = useState(currentUsername || "");
   const [statusMsg, setStatusMsg] = useState("");
@@ -34,7 +34,7 @@ export default function UsernameEditor({
         setStatusMsg("✓ Päivitetty!");
         router.refresh();
         setTimeout(() => {
-          setIsOpen(false);
+          setIsOpenAction(false);
           setStatusMsg("");
         }, 1200);
       } else {
