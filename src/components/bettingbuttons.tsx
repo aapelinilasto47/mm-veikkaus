@@ -128,9 +128,7 @@ export default function BettingButtons({
             </span>
           ) : (
             <span className="text-[10px] text-gray-200 uppercase font-black tracking">
-              {disabled
-                ? `Suljettu (ID: ${matchId.substring(0, 8)})`
-                : "Veikkaa"}
+              {disabled ? "Sulkeutunut" : "Veikkaa"}
             </span>
           )}
         </div>
