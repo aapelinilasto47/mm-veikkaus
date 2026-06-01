@@ -5,6 +5,7 @@ import RulesAccordion from "./rulesaccordion";
 
 interface Player {
   name: string;
+  username?: string;
   points: number;
   jackpots: number;
 }
@@ -35,9 +36,11 @@ export default function Leaderboard({
     localStorage.setItem("followed_players", JSON.stringify(newFollowed));
   };
 
-  // Suodatetaan lista: huomioi haun, seurattavat ja kirjautumisen
+  // Suodatetaan lista: huomioi haun (nyt myös nimimerkillä!), seurattavat ja kirjautumisen
   const displayBoard = sortedLeaderboard.filter((player) => {
-    const matchesSearch = player.name
+    // Etsitään hakutermillä joko nimimerkkiä tai sähköpostia
+    const nameToSearch = player.username || player.name;
+    const matchesSearch = nameToSearch
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
 
@@ -51,16 +54,14 @@ export default function Leaderboard({
 
   const maskEmail = (email: string) => {
     if (!email) return "";
-    // Otetaan vain osa ennen @-merkkiä siltä varalta, että jollain on pääte mukana
     const namePart = email.split("@")[0];
-    const firstName = namePart.split(".")[0]; // Jaetaan pisteellä, jos sellainen on
+    const firstName = namePart.split(".")[0];
     const firstNameCapitalized =
-      firstName.charAt(0).toUpperCase() + firstName.slice(1); // Iso alkukirjain
+      firstName.charAt(0).toUpperCase() + firstName.slice(1);
 
     if (firstName.length <= 8) {
-      return firstNameCapitalized; // Näytä kokonaan, jos 8 tai vähemmän merkkiä
+      return firstNameCapitalized;
     }
-    // Näytetään vain 8 ensimmäistä kirjainta, jos enemmän
     return firstNameCapitalized.substring(0, 8);
   };
 
@@ -80,10 +81,8 @@ export default function Leaderboard({
         </summary>
 
         <div className="p-4 bg-black/20">
-          {/* HAKU JA SUODATUS: Näytetään vain kirjautuneille */}
           {currentUserEmail ? (
             <div className="flex flex-col sm:flex-row gap-4 mb-6 pb-4 border-b border-gray-800">
-              {/* Hakukenttä */}
               <div className="relative flex-1">
                 <input
                   type="text"
@@ -102,7 +101,6 @@ export default function Leaderboard({
                 )}
               </div>
 
-              {/* Suodatusnapit */}
               <div className="flex gap-2">
                 <button
                   onClick={() => setShowOnlyFollowed(false)}
@@ -148,7 +146,6 @@ export default function Leaderboard({
                   </td>
                 </tr>
               ) : (
-                /* Jos haetaan tai suodatetaan, näytetään kaikki osumat. Muuten vain Top 20. */
                 (searchTerm || showOnlyFollowed
                   ? displayBoard
                   : displayBoard.slice(0, 20)
@@ -165,7 +162,6 @@ export default function Leaderboard({
                       className={isMe ? "text-yellow-500" : "text-gray-300"}
                     >
                       <td className="py-3 font-mono text-xs flex items-center gap-2">
-                        {/* Tähti vain kirjautuneille ja muille kuin itselle */}
                         {currentUserEmail && !isMe ? (
                           <button
                             onClick={() => toggleFollow(player.name)}
@@ -178,9 +174,14 @@ export default function Leaderboard({
                         )}
                         {actualIndex + 1}.
                       </td>
+
+                      {/* TÄSTÄ MUUTETTU DISPLAY-NIMI: */}
                       <td className="py-3 font-bold truncate max-w-[120px]">
-                        {maskEmail(player.name)}
+                        {player.username
+                          ? player.username
+                          : maskEmail(player.name)}
                       </td>
+
                       <td className="py-3 text-right text-xs">
                         🎯 {player.jackpots}
                       </td>

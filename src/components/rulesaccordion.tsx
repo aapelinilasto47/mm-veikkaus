@@ -31,11 +31,11 @@ export default function RulesAccordion() {
               </h4>
               <ul className="space-y-1 list-disc list-inside text-gray-400">
                 <li>
-                  <span className="text-rose-500 font-bold">10p</span> – Täysin
+                  <span className="text-rose-500 font-bold">6p</span> – Täysin
                   oikea tulos
                 </li>
                 <li>
-                  <span className="text-emerald-500 font-bold">5p</span> – Oikea
+                  <span className="text-emerald-500 font-bold">4p</span> – Oikea
                   voittaja & maalin päässä
                 </li>
                 <li>
@@ -55,10 +55,10 @@ export default function RulesAccordion() {
                 Tärkeää tietää
               </h4>
               <p className="text-xs leading-relaxed text-gray-400 italic">
-                Tällä hetkellä otteluiden lopputulokset haetaan manuaalisesti,
-                joten pisteet saattavat päivittyä viiveellä. Pyrimme
-                automatisoimaan prosessin tulevaisuudessa, mutta toistaiseksi
-                tämä on varmin ja turvallisin ratkaisu. Kiitos
+                Tällä hetkellä otteluiden lopputulokset haetaan melko
+                harvakseltaan, joten pisteet saattavat päivittyä viiveellä.
+                Pyrimme automatisoimaan prosessin tulevaisuudessa, mutta
+                toistaiseksi tämä on varmin ja turvallisin ratkaisu. Kiitos
                 kärsivällisyydestä!
               </p>
             </div>
@@ -66,7 +66,7 @@ export default function RulesAccordion() {
           <div className="border-t border-gray-700 pt-2">
             <h4 className="font-black text-amber-400 uppercase text-md mt-4">
               Pudotuspeleissä pisteet tuplataan!
-              <br></br>Esimerkiksi täysosuma 10p → 20p.
+              <br></br>Esimerkiksi täysosuma 6p → 12p.
             </h4>
           </div>
 

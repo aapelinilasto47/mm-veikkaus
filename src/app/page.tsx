@@ -7,6 +7,8 @@ import { getServerSession } from "next-auth/next";
 import { calculateMatchPoints } from "../lib/scoreCalculator";
 import RulesAccordion from "../components/rulesaccordion";
 import Leaderboard from "../components/leaderboard";
+import UsernameEditor from "../components/usernameeditor";
+import ProfileNook from "../components/profilenook";
 
 export const dynamic = "force-dynamic";
 
@@ -46,16 +48,20 @@ export default async function Home({ searchParams }: HomeProps) {
   // 2. Lasketaan pisteet jokaiselle käyttäjälle (Vain valitun turnauksen datasta!)
   const leaderBoardMap: Record<
     string,
-    { name: string; points: number; jackpots: number }
+    { name: string; username?: string; points: number; jackpots: number }
   > = {};
 
   allPredictions.forEach((pred: any) => {
     if (!leaderBoardMap[pred.userId]) {
       leaderBoardMap[pred.userId] = {
         name: pred.userId,
+        username: pred.username || undefined, //
         points: 0,
         jackpots: 0,
       };
+    } else if (pred.username && !leaderBoardMap[pred.userId].username) {
+      // Varmistetaan, että jos jossain myöhemmässä dokumentissa on username, se napataan talteen
+      leaderBoardMap[pred.userId].username = pred.username;
     }
   });
 
@@ -259,26 +265,24 @@ export default async function Home({ searchParams }: HomeProps) {
 
   return (
     <div className="min-h-screen bg-gray-950 text-white p-4 sm:p-8">
-      {session ? (
-        <div className="flex items-center gap-4">
-          <span>
-            Sisäänkirjautunut: <b>{session.user?.name}</b>
-          </span>
+      <div className="flex justify-between items-center max-w-7xl mx-auto w-full mb-4">
+        {session ? (
+          <ProfileNook
+            sessionUser={session.user as any}
+            currentUsername={
+              sortedLeaderboard.find((p) => p.name === session.user?.email)
+                ?.username
+            }
+          />
+        ) : (
           <a
-            href="/api/auth/signout"
-            className="text-sm bg-red-600 px-3 py-1 rounded"
+            href="/api/auth/signin"
+            className="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-md"
           >
-            Kirjaudu ulos
+            Kirjaudu sisään!
           </a>
-        </div>
-      ) : (
-        <a
-          href="/api/auth/signin"
-          className="bg-blue-600 px-4 py-2 rounded font-bold"
-        >
-          Kirjaudu sisään!
-        </a>
-      )}
+        )}
+      </div>
       <header className="max-w-3xl mx-auto mt-8 mb-12 text-center">
         {/* MUUTOS: Otsikko vaihtuu valitun turnauksen mukaan dynaamisesti */}
         <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-700 to-red-500 uppercase tracking-tighter">
