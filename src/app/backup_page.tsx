@@ -3,47 +3,31 @@ import dbConnect from "../lib/dbConnect";
 import Match from "../models/Match";
 import Prediction from "../models/Prediction";
 import BettingButtons from "../components/bettingbuttons";
+import { match } from "assert/strict";
 import { getServerSession } from "next-auth/next";
 import { calculateMatchPoints } from "../lib/scoreCalculator";
 import RulesAccordion from "../components/rulesaccordion";
 import Leaderboard from "../components/leaderboard";
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic"; // Tämä varmistaa, että data haetaan joka ikiselle pyynnölle eikä vain build-vaiheessa
 
-// MUUTOS: Otetaan vastaan searchParams, jotta turnaus voidaan valita URL-osoitteesta
-interface HomeProps {
-  searchParams: Promise<{ turnaus?: string }>;
-}
-
-export default async function Home({ searchParams }: HomeProps) {
+export default async function Home() {
   await dbConnect();
 
-  // MUUTOS: Luetaan turnaus parametreista, oletuksena uusi futis_2026
-  const resolvedSearchParams = await searchParams;
-  const activeTournament =
-    resolvedSearchParams.turnaus === "latka" ? "lätkä_2026" : "futis_2026";
-
+  const matches = await Match.find({}).lean();
   const nowServerTime = new Date().getTime();
+
   const session = await getServerSession();
 
-  // 1. Haetaan ottelut ja veikkaukset suodatettuna VALITUN turnauksen mukaan
-  const allMatches = await Match.find({ tournament: activeTournament }).lean();
-
-  // Haetaan vain ne veikkaukset, jotka kuuluvat tämän turnauksen otteluihin
-  const matchIds = allMatches.map((m) => m._id.toString());
-  const allPredictions = await Prediction.find({
-    matchId: { $in: matchIds },
+  const userPredictions = await Prediction.find({
+    userId: session?.user?.email,
   }).lean();
 
-  // Haetaan kirjautuneen käyttäjän omat veikkaukset dynaamista nappuloiden tilaa varten
-  const userPredictions = session?.user?.email
-    ? await Prediction.find({
-        userId: session.user.email,
-        matchId: { $in: matchIds },
-      }).lean()
-    : [];
+  // 1. Haetaan KAIKKI päättyneet ottelut ja KAIKKI veikkaukset
+  const allMatches = await Match.find({}).lean();
+  const allPredictions = await Prediction.find({}).lean();
 
-  // 2. Lasketaan pisteet jokaiselle käyttäjälle (Vain valitun turnauksen datasta!)
+  // 2. Lasketaan pisteet jokaiselle käyttäjälle
   const leaderBoardMap: Record<
     string,
     { name: string; points: number; jackpots: number }
@@ -52,7 +36,7 @@ export default async function Home({ searchParams }: HomeProps) {
   allPredictions.forEach((pred: any) => {
     if (!leaderBoardMap[pred.userId]) {
       leaderBoardMap[pred.userId] = {
-        name: pred.userId,
+        name: pred.userId, // Tämä on yleensä sähköposti sessionista
         points: 0,
         jackpots: 0,
       };
@@ -66,16 +50,14 @@ export default async function Home({ searchParams }: HomeProps) {
 
     const isMatchFinished =
       match && match.homeScore !== null && match.awayScore !== null;
-
+    // Lasketaan pisteet vain jos ottelulla on jo lopputulos
     if (match && isMatchFinished) {
-      // MUUTOS: Välitetään uusi activeTournament-parametri pistelaskuriin
       const scoreResult = calculateMatchPoints(
         match.homeScore,
         match.awayScore,
         pred.homeScore,
         pred.awayScore,
-        match.isPlayoff,
-        activeTournament,
+        match.isPlayoff, // Välitetään tieto playoff-ottelusta
       );
 
       leaderBoardMap[pred.userId].points += scoreResult.points;
@@ -85,29 +67,35 @@ export default async function Home({ searchParams }: HomeProps) {
     }
   });
 
+  // 3. Muutetaan objekti listaksi ja järjestetään pisteiden mukaan
   const sortedLeaderboard = Object.values(leaderBoardMap).sort(
     (a, b) => b.points - a.points || b.jackpots - a.jackpots,
   );
 
-  const sortedMatches = [...allMatches].sort(
+  const sortedMatches = matches.sort(
     (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime(),
   );
 
   const groupedMatches = sortedMatches.reduce((groups: any, match: any) => {
     const d = new Date(match.startTime);
+
+    // Päivä ja kuukausi muodossa D.M.
     const dayMonth = `${d.getDate()}.${d.getMonth() + 1}.`;
     const isPlayoff = match.isPlayoff ? " (Pudotuspelit)" : "";
 
+    // TARKISTETAAN ONKO OTTELU TÄNÄÄN
     const today = new Date();
     const isToday =
       d.getDate() === today.getDate() &&
       d.getMonth() === today.getMonth() &&
       d.getFullYear() === today.getFullYear();
 
+    // MÄÄRITETÄÄN OTSIKKO: Jos on tämä päivä, käytetään sanaa "Tänään"
     let dateLabel = "";
     if (isToday) {
       dateLabel = `Tänään ${dayMonth}${isPlayoff}`;
     } else {
+      // Viikonpäivä suomeksi (esim. perjantai)
       const weekday = d.toLocaleDateString("fi-FI", { weekday: "long" });
       dateLabel = `${weekday} ${dayMonth}${isPlayoff}`;
     }
@@ -120,6 +108,7 @@ export default async function Home({ searchParams }: HomeProps) {
     return groups;
   }, {});
 
+  // 1. Jaetaan päivät kahteen ryhmään sen mukaan, onko kaikki päivän ottelut jo pelattu
   const pastDays: string[] = [];
   const activeDays: string[] = [];
 
@@ -135,6 +124,7 @@ export default async function Home({ searchParams }: HomeProps) {
     }
   });
 
+  // Apufunktio yhden päivän ja sen ottelukorttien renderöintiin (estää koodin duplikaation)
   const renderDaySection = (date: string) => (
     <section key={date} className="mb-10">
       <h2
@@ -149,15 +139,14 @@ export default async function Home({ searchParams }: HomeProps) {
       <div className="grid gap-3">
         {groupedMatches[date].map((match: any) => {
           const userPrediction = userPredictions.find(
-            (p: any) => p.matchId === match._id.toString(),
+            (p: any) => p.matchId === match._id,
           );
 
           const matchDateString = match.startTime.includes("+")
             ? match.startTime
             : `${match.startTime}+03:00`;
           const matchStartTime = new Date(matchDateString).getTime();
-          const isMatchStarted =
-            match.homeScore !== null && match.awayScore !== null;
+          const isMatchStarted = matchStartTime <= nowServerTime;
 
           let earnedPoints = 0;
           let scoreDetails = null;
@@ -167,45 +156,49 @@ export default async function Home({ searchParams }: HomeProps) {
             match.awayScore !== null &&
             userPrediction
           ) {
-            // MUUTOS: Välitetään turnausnimi myös korttien pistelaskuun
             scoreDetails = calculateMatchPoints(
               match.homeScore,
               match.awayScore,
               userPrediction.homeScore,
               userPrediction.awayScore,
               match.isPlayoff,
-              activeTournament,
             );
             earnedPoints = scoreDetails.points;
           }
 
-          // MUUTOS: Päivitetty värikoodit vastaamaan futiksen uutta (6/4/3) pisteytystä lennosta
-          let pointColorClass = "text-gray-500";
-          const maxPoints =
-            activeTournament === "lätkä_2026" ? (match.isPlayoff ? 20 : 10) : 6;
-          const midPoints =
-            activeTournament === "lätkä_2026" ? (match.isPlayoff ? 10 : 5) : 4;
-          const minPoints =
-            activeTournament === "lätkä_2026" ? (match.isPlayoff ? 6 : 3) : 3;
+          let pointColorClass = "text-gray-500"; // Oletusväri, jos ottelu ei ole alkanut
 
-          if (earnedPoints === maxPoints && earnedPoints > 0) {
-            pointColorClass = "text-rose-500 animate-pulse";
-          } else if (earnedPoints >= midPoints) {
-            pointColorClass = "text-teal-500";
-          } else if (earnedPoints >= minPoints) {
-            pointColorClass = "text-emerald-500";
+          if (match.isPlayoff) {
+            if (earnedPoints === 20) {
+              pointColorClass = "text-rose-500 animate-pulse";
+            } else if (earnedPoints >= 10) {
+              pointColorClass = "text-teal-500";
+            } else if (earnedPoints >= 6) {
+              pointColorClass = "text-emerald-500";
+            }
+          } else {
+            if (earnedPoints === 10) {
+              pointColorClass = "text-rose-500 animate-pulse";
+            } else if (earnedPoints >= 5) {
+              pointColorClass = "text-teal-500";
+            } else if (earnedPoints >= 3) {
+              pointColorClass = "text-emerald-500";
+            }
           }
 
           return (
             <div
-              key={match._id.toString()}
+              key={match._id}
               className="bg-gray-900 p-3 sm:p-5 rounded-xl border border-gray-800 flex justify-between items-center hover:border-gray-600 transition-colors shadow-xl overflow-hidden"
             >
+              {/* Kotijoukkue */}
               <div className="flex-1 text-right font-bold text-md sm:text-2xl truncate px-1">
                 {match.home}
               </div>
 
+              {/* Keskiosa */}
               <div className="flex flex-col items-center min-w-[110px] sm:min-w-[140px] px-2 mt-1">
+                {/* Tulos */}
                 <div className="flex items-center flex-col bg-gray-800 border border-gray-700 rounded-lg px-2 py-1">
                   <div className="text-xs sm:text-sm text-gray-500 uppercase tracking-widest py-1.5">
                     Lopputulos
@@ -214,6 +207,7 @@ export default async function Home({ searchParams }: HomeProps) {
                     {match.homeScore ?? "-"} : {match.awayScore ?? "-"}
                   </div>
                 </div>
+                {/* VAIHTUVA SISÄLTÖ: Pisteet TAI Status */}
                 <div className="mt-2 h-5 sm:h-7 flex items-center justify-center">
                   {scoreDetails ? (
                     <span
@@ -233,8 +227,7 @@ export default async function Home({ searchParams }: HomeProps) {
                 </div>
 
                 <BettingButtons
-                  key={match._id.toString()}
-                  matchId={match._id.toString()}
+                  matchId={match._id}
                   initialChoice={userPrediction ? userPrediction.choice : null}
                   initialHomeScore={
                     userPrediction ? userPrediction.homeScore : null
@@ -247,6 +240,7 @@ export default async function Home({ searchParams }: HomeProps) {
                 />
               </div>
 
+              {/* Vierasjoukkue */}
               <div className="flex-1 text-left font-bold text-md sm:text-2xl truncate px-1">
                 {match.away}
               </div>
@@ -280,33 +274,17 @@ export default async function Home({ searchParams }: HomeProps) {
         </a>
       )}
       <header className="max-w-3xl mx-auto mt-8 mb-12 text-center">
-        {/* MUUTOS: Otsikko vaihtuu valitun turnauksen mukaan dynaamisesti */}
         <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-700 to-red-500 uppercase tracking-tighter">
-          {activeTournament === "futis_2026"
-            ? "Futiksen MM-veikkaus 2026"
-            : "Lätkän MM-veikkaus 2026"}
+          Lätkän MM-veikkaus 2026
         </h1>
         <span className="px-2 py-0.5 bg-blue-500/20 text-blue-400 text-[10px] font-bold rounded border border-blue-500/30 uppercase tracking-widest">
-          {activeTournament === "futis_2026" ? "Early Access" : "Beta"}
+          Beta
         </span>
         <div className="h-1 w-24 bg-blue-500 mx-auto mt-4 mb-4 rounded-full"></div>
-
-        {/* MUUTOS: Turnauksen vaihtopainike (Arkisto / Palaa takaisin) */}
-        <div className="mb-8">
-          <a
-            href={activeTournament === "futis_2026" ? "/?turnaus=latka" : "/"}
-            className="inline-flex items-center gap-2 text-xs bg-gray-900 border border-gray-800 hover:border-gray-700 hover:bg-gray-800 px-4 py-2 rounded-xl transition-all font-bold uppercase tracking-wider text-gray-300 shadow-md"
-          >
-            {activeTournament === "futis_2026"
-              ? "Katso Lätkän MM-kisojen tulokset"
-              : "Palaa Jalkapallon MM-kisoihin"}
-          </a>
-        </div>
-
         <h2 className="text-lg mb-10 font-black text-transparent bg-clip-text bg-white uppercase tracking-tighter">
           Veikkaa otteluiden tuloksia ja kilpaile ystäviesi kanssa!
         </h2>
-        {session && sortedLeaderboard.length > 0 && (
+        {session && (
           <div className="mb-6 p-4 bg-blue-500/10 border border-blue-500/20 rounded text-center">
             <p className="text-blue-300 text-sm uppercase tracking-widest font-bold">
               Olet tällä hetkellä sijalla <br></br>
@@ -350,14 +328,19 @@ export default async function Home({ searchParams }: HomeProps) {
       </header>
 
       <div className="max-w-3xl mx-auto">
+        {/* MENNEET OTTELUT KOOTTUNA YHDEN HAITARIN ALLE */}
         {pastDays.length > 0 && (
           <details className="group bg-gray-900 rounded-2xl mb-8 overflow-hidden shadow-xl">
             <summary className="list-none p-4 cursor-pointer flex justify-between items-center bg-gray-900/40 hover:bg-gray-900/60 transition-colors select-none">
               <div className="flex items-center gap-3">
                 <span className="text-xl">📁</span>
+
+                {/* TEKSTI 1: Näkyy vain kun haitari on SULJETTU */}
                 <span className="font-black uppercase tracking-wider text-sm text-gray-400 group-open:hidden">
                   Näytä menneet ottelut
                 </span>
+
+                {/* TEKSTI 2: Näkyy vain kun haitari on AVATTU */}
                 <span className="font-black uppercase tracking-wider text-sm text-yellow-500/80 hidden group-open:inline">
                   Piilota menneet ottelut
                 </span>
@@ -367,8 +350,10 @@ export default async function Home({ searchParams }: HomeProps) {
               </span>
             </summary>
 
+            {/* MENNEET OTTELUT HAITARIN SISÄLTÖNÄ */}
             <div className="pt-6 pb-4 bg-gray-950/50 grid gap-3">
               {[...pastDays].reverse().map((date) => renderDaySection(date))}
+
               <div className="flex justify-center">
                 <a
                   href="#top"
@@ -381,6 +366,7 @@ export default async function Home({ searchParams }: HomeProps) {
           </details>
         )}
 
+        {/* AKTIIVISET / TULEVAT OTTELUT AINA AUKI */}
         {activeDays.map((date) => renderDaySection(date))}
 
         {activeDays.length === 0 && pastDays.length > 0 && (

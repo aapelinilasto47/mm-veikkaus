@@ -16,7 +16,7 @@ def scrape_fixtures():
         # PAKOTETAAN AIKAVYÖHYKE: Flashscore antaa Suomen ajat myös GitHubissa
         context = browser.new_context(timezone_id="Europe/Helsinki")
         page = context.new_page()
-        page.goto("https://www.flashscore.fi/jalkapallo/maailma/mm-kisat/otteluohjelma/")
+        page.goto("https://www.flashscore.fi/jaakiekko/maailma/mm-kisat/otteluohjelma/")
         
         try:
             page.wait_for_selector(".event__match", timeout=5000)
@@ -39,7 +39,7 @@ def scrape_fixtures():
             match_id = generate_id(home, away, iso_time)
 
             # Playoff-tunnistus (tarkista pvm kisoittain)
-            is_playoff = iso_time >= "2026-06-29T00:00:00"
+            is_playoff = iso_time >= "2026-05-27T00:00:00"
 
             fixtures.append({
                 "id": match_id,
@@ -48,8 +48,7 @@ def scrape_fixtures():
                 "away": away,
                 "awayScore": None,
                 "startTime": iso_time,
-                "isPlayoff": is_playoff,
-                "tournament": "futis_2026"
+                "isPlayoff": is_playoff
             })
         
         browser.close()
@@ -61,7 +60,7 @@ def scrape_results():
         browser = p.chromium.launch()
         context = browser.new_context(timezone_id="Europe/Helsinki")
         page = context.new_page()
-        page.goto("https://www.flashscore.fi/jalkapallo/maailma/mm-kisat/tulokset/")
+        page.goto("https://www.flashscore.fi/jaakiekko/maailma/mm-kisat/tulokset/")
         
         try: page.wait_for_selector(".event__match", timeout=5000)
         except:
@@ -76,10 +75,6 @@ def scrape_results():
             date_raw = match.query_selector(".event__time").inner_text()
             
             day_part = date_raw.split(" ")[0]
-
-            if len(day_part) > 6:
-                continue # Vältetään "Tänään" yms. epäkelpo päivämäärät
-
             clean_date = datetime.strptime(f"{day_part} {datetime.now().year}", "%d.%m. %Y")
             iso_date = clean_date.strftime("%Y-%m-%dT00:00:00")
 

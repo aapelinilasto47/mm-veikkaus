@@ -29,6 +29,7 @@ def update_database():
         
         # NIMIPOHJAINEN HAKU: Estää duplikaatit jos järjestys vaihtuu
         existing_fix = matches_collection.find_one({
+            "tournament": "futis_2026",
             "$or": [
                 {"_id": fixture["id"]}, # Haku suoralla ID:llä
                 {
@@ -65,6 +66,7 @@ def update_database():
     for result in results_list:
         res_date = result['startTime'].split("T")[0]
         existing_res = matches_collection.find_one({
+            "tournament": "futis_2026",
             "$or": [
                 {"home": result['home'], "away": result['away']},
                 {"home": result['away'], "away": result['home']}

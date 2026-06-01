@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Lätkän MM-veikkaus 2026",
+  title: "Futiksen MM-veikkaus 2026",
   description:
     "Veikkaa otteluiden tuloksia ja kerää pisteitä! Kirjaudu sisään tallentaaksesi veikkaukset.",
 };

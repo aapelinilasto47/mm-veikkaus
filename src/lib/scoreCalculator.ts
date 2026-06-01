@@ -13,6 +13,7 @@ export function calculateMatchPoints(
   predictedHome: number,
   predictedAway: number,
   isPlayoff: boolean,
+  tournament: string,
 ): ScoreResult {
   // 1. Määritetään oikeat merkit (1X2)
   const actualChoice =
@@ -34,29 +35,48 @@ export function calculateMatchPoints(
   const awayDiff = Math.abs(actualAway - predictedAway);
 
   // Maalin päässä on voimassa, jos toinen on oikein ja toinen heittää yhdellä,
-  // TAI jos molemmat heittävät yhdellä (esim. 2-1 vs 3-2), mutta merkki pysyy samana.
+
   const isCloseCall =
     isCorrectWinner && !isPerfectScore && homeDiff + awayDiff < 2;
 
   // 3. Pisteytyslogiikkasi mukaan:
   let points = 0;
 
-  if (isPerfectScore) {
-    points = 10;
-  } else if (isCloseCall) {
-    points = 5; // 3p merkistä + 2p läheltä piti
-  } else if (isCorrectWinner) {
-    points = 3;
-  }
+  if (tournament === "lätkä_2026") {
+    if (isPerfectScore) {
+      points = 10;
+    } else if (isCloseCall) {
+      points = 5; // 3p merkistä + 2p läheltä piti
+    } else if (isCorrectWinner) {
+      points = 3;
+    }
 
-  if (isPlayoff) {
-    points = points * 2;
-  }
+    if (isPlayoff) {
+      points = points * 2;
+    }
 
-  return {
-    points,
-    isCorrectWinner,
-    isPerfectScore,
-    isCloseCall,
-  };
+    return {
+      points,
+      isCorrectWinner,
+      isPerfectScore,
+      isCloseCall,
+    };
+  } else if (tournament === "futis_2026") {
+    if (isPerfectScore) {
+      points = 6;
+    } else if (isCloseCall) {
+      points = 4; // 3p merkistä + 1p läheltä piti
+    } else if (isCorrectWinner) {
+      points = 3;
+    }
+
+    return {
+      points,
+      isCorrectWinner,
+      isPerfectScore,
+      isCloseCall,
+    };
+  } else {
+    throw new Error(`Tuntematon turnaus: ${tournament}`);
+  }
 }

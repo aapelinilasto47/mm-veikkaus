@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { set } from "mongoose";
-import { match } from "assert";
 
 export default function BettingButtons({
   matchId,
@@ -31,33 +29,36 @@ export default function BettingButtons({
   const [isLiveDisabled, setIsLiveDisabled] = useState(initialDisabled);
 
   useEffect(() => {
-    if (initialDisabled) return; // Jos ottelu on jo suljettu, ei tarvitse asettaa timeria
+    // Synkronoidaan dynaamisesti se, onko peliä oikeasti veikattu vai ei
+    setHasPrediction(!!initialChoice);
+    setIsLiveDisabled(initialDisabled);
+
+    // Jos peliä ei ole veikattu, nollataan maalitilanne, ettei vanhat lätkämaalit jää kummittelemaan
+    if (!initialChoice) {
+      setHomeScore(0);
+      setAwayScore(0);
+    } else {
+      setHomeScore(initialHomeScore ?? 0);
+      setAwayScore(initialAwayScore ?? 0);
+    }
 
     const matchDateString = startTimeStr.includes("+")
       ? startTimeStr
       : `${startTimeStr}+03:00`;
     const matchStartTime = new Date(matchDateString).getTime();
 
-    // 1. Välitön tarkistus selaimessa heti kun komponentti mountataan
     if (Date.now() >= matchStartTime) {
       setIsLiveDisabled(true);
-      return;
+    } else {
+      setIsLiveDisabled(false);
     }
-
-    // 2. Lasketaan kuinka monta millisekuntia on ottelun alkamiseen
-    const timeUntilStart = matchStartTime - Date.now();
-
-    if (timeUntilStart > 0) {
-      // Asetetaan ajastin laukeamaan täsmälleen aloitusaikaan
-      const timer = setTimeout(() => {
-        setIsLiveDisabled(true);
-        setIsOpen(false); // Suljetaan veikkausvalikko livenä silmien edessä
-      }, timeUntilStart);
-
-      return () => clearTimeout(timer); // Siivotaan ajastin jos komponentti unmountataan
-    }
-  }, [startTimeStr, initialDisabled]);
-
+  }, [
+    startTimeStr,
+    initialDisabled,
+    initialChoice,
+    initialHomeScore,
+    initialAwayScore,
+  ]);
   // Käytetään tästä eteenpäin tätä live-muuttujaa vanhan propsin sijaan
   const disabled = isLiveDisabled;
 
@@ -127,7 +128,9 @@ export default function BettingButtons({
             </span>
           ) : (
             <span className="text-[10px] text-gray-200 uppercase font-black tracking">
-              {disabled ? "Sulkeutunut" : "Veikkaa"}
+              {disabled
+                ? `Suljettu (ID: ${matchId.substring(0, 8)})`
+                : "Veikkaa"}
             </span>
           )}
         </div>
