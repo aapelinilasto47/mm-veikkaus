@@ -59,7 +59,7 @@ export default function UsernameEditor({
         <input
           type="text"
           maxLength={12}
-          placeholder="Esim_Koodari"
+          placeholder="Veikkaaja123"
           value={inputName}
           onChange={(e) =>
             setInputName(e.target.value.replace(/[^a-zA-Z0-9_öäåÖÄÅ]/g, ""))
