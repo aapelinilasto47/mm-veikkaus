@@ -395,9 +395,8 @@ export default async function Home({ searchParams }: HomeProps) {
         </div>
       </header>
 
-      {specialMatch && renderSpecialMatch(specialMatch)}
-
       <div className="max-w-3xl mx-auto">
+        {specialMatch && renderSpecialMatch(specialMatch)}
         {pastDays.length > 0 && (
           <details className="group bg-gray-900 rounded-2xl mb-8 overflow-hidden shadow-xl">
             <summary className="list-none p-4 cursor-pointer flex justify-between items-center bg-gray-900/40 hover:bg-gray-900/60 transition-colors select-none">
