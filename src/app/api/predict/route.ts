@@ -25,6 +25,7 @@ export async function POST(request: Request) {
     const match = mongoose.Types.ObjectId.isValid(matchId)
       ? await Match.findById(new mongoose.Types.ObjectId(matchId))
       : await Match.findOne({ _id: matchId }); // Kokeillaan hakea ensin _id-kentällä, sitten jos se ei onnistu, haetaan matchId-kentällä
+
     if (!match) {
       return NextResponse.json(
         { success: false, error: "Match not found" },

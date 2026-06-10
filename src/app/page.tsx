@@ -290,11 +290,11 @@ export default async function Home({ searchParams }: HomeProps) {
 
         <div className="bg-gray-900/90 p-4 rounded-xl border border-gray-800 flex flex-col justify-between items-center gap-4">
           <div>
-            <p className="text-xs text-center text-gray-400 uppercase tracking-widest mb-1">
-              Sinun valintasi
+            <p className="text-xs text-center text-gray-400 uppercase tracking-widest mb-2">
+              Veikkaa kisojen mestaria!
             </p>
-            <p className="text-lg font-bold text-white text-center">
-              {userPrediction ? userPrediction.choice : "Ei vielä valintaa"}
+            <p className="text-md text-center text-rose-500 font-bold uppercase tracking-wider">
+              Oikeasta veikkauksesta +10 pistettä!
             </p>
           </div>
 
