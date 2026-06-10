@@ -4,6 +4,7 @@ import Prediction from "../../../models/Prediction";
 import Match from "../../../models/Match";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../api/auth/[...nextauth]/route";
+import mongoose from "mongoose";
 
 export async function POST(request: Request) {
   try {
@@ -21,7 +22,9 @@ export async function POST(request: Request) {
     const { matchId, choice, homeScore, awayScore } = body;
     const userId = session.user.email;
 
-    const match = await Match.findById(matchId);
+    const match = mongoose.Types.ObjectId.isValid(matchId)
+      ? await Match.findById(new mongoose.Types.ObjectId(matchId))
+      : await Match.findOne({ _id: matchId }); // Kokeillaan hakea ensin _id-kentällä, sitten jos se ei onnistu, haetaan matchId-kentällä
     if (!match) {
       return NextResponse.json(
         { success: false, error: "Match not found" },
