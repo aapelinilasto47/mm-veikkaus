@@ -1,13 +1,12 @@
-import Image from "next/image";
 import dbConnect from "../lib/dbConnect";
 import Match from "../models/Match";
 import Prediction from "../models/Prediction";
 import BettingButtons from "../components/bettingbuttons";
 import { getServerSession } from "next-auth/next";
 import { calculateMatchPoints } from "../lib/scoreCalculator";
-import RulesAccordion from "../components/rulesaccordion";
+
 import Leaderboard from "../components/leaderboard";
-import UsernameEditor from "../components/usernameeditor";
+
 import ProfileNook from "../components/profilenook";
 
 export const dynamic = "force-dynamic";
@@ -30,6 +29,12 @@ export default async function Home({ searchParams }: HomeProps) {
 
   // 1. Haetaan ottelut ja veikkaukset suodatettuna VALITUN turnauksen mukaan
   const allMatches = await Match.find({ tournament: activeTournament }).lean();
+
+  const specialMatch = await Match.findOne({
+    isSpecial: true,
+    tournament: activeTournament,
+  }).lean();
+  const regularMatches = allMatches.filter((m: any) => m.isSpecial !== true);
 
   // Haetaan vain ne veikkaukset, jotka kuuluvat tämän turnauksen otteluihin
   const matchIds = allMatches.map((m) => m._id.toString());
@@ -95,7 +100,7 @@ export default async function Home({ searchParams }: HomeProps) {
     (a, b) => b.points - a.points || b.jackpots - a.jackpots,
   );
 
-  const sortedMatches = [...allMatches].sort(
+  const sortedMatches = [...regularMatches].sort(
     (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime(),
   );
 
@@ -264,6 +269,64 @@ export default async function Home({ searchParams }: HomeProps) {
     </section>
   );
 
+  const renderSpecialMatch = (match: any) => {
+    const userPrediction = userPredictions.find(
+      (p: any) => p.matchId === match._id.toString(),
+    );
+
+    const isSpecialStarted =
+      new Date(match.startTime).getTime() < nowServerTime;
+    const isSpecialFinished =
+      match.homeScore !== null && match.awayScore !== null;
+
+    return (
+      <div className="mb-10 bg-gradient-to-br from-amber-950/20 to-yellow-950/20 border border-amber-500/30 p-4 sm:p-6 rounded-2xl shadow-2xl">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-xl animate-bounce">🏆</span>
+          <h2 className="text-lg font-black text-amber-400 uppercase tracking-wider">
+            {match.home} {/* "Mestariveikkaus 2026" */}
+          </h2>
+        </div>
+
+        <div className="bg-gray-900/90 p-4 rounded-xl border border-gray-800 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div>
+            <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">
+              Sinun valintasi
+            </p>
+            <p className="text-lg font-bold text-white">
+              {userPrediction ? userPrediction.choice : "Ei vielä valintaa"}
+            </p>
+          </div>
+
+          {isSpecialFinished && (
+            <div className="bg-amber-900/40 border border-amber-700/50 px-3 py-1 rounded-lg text-center">
+              <span className="text-xs text-amber-300 block font-bold uppercase">
+                Oikea mestari
+              </span>
+              <span className="font-mono font-bold text-yellow-400">
+                {match.homeScore}
+              </span>
+            </div>
+          )}
+
+          {/* HUOM: Koska Mestariveikkaus tarvitsee luultavasti tekstivalinnan/pudotusvalikon 
+            perinteisten maalinappien sijaan, voit joko muokata BettingButtons-komponenttiasi 
+            tukemaan sitä, tai tehdä tätä varten pienen oman komponentin myöhemmin.
+          */}
+          <BettingButtons
+            matchId={match._id.toString()}
+            initialChoice={userPrediction ? userPrediction.choice : null}
+            initialHomeScore={userPrediction ? userPrediction.homeScore : null}
+            initialAwayScore={userPrediction ? userPrediction.awayScore : null}
+            disabled={isSpecialStarted || isSpecialFinished}
+            startTimeStr={match.startTime}
+            isSpecial={true}
+          />
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-950 text-white p-4 sm:p-8">
       <div className="flex justify-between items-center max-w-7xl mx-auto w-full mb-4">
@@ -331,6 +394,8 @@ export default async function Home({ searchParams }: HomeProps) {
           />
         </div>
       </header>
+
+      {specialMatch && renderSpecialMatch(specialMatch)}
 
       <div className="max-w-3xl mx-auto">
         {pastDays.length > 0 && (

@@ -9,6 +9,7 @@ const matchSchema = new mongoose.Schema({
   startTime: { type: Date, required: true },
   isPlayoff: { type: Boolean, default: false },
   tournament: { type: String, required: true },
+  isSpecial: { type: Boolean, default: false },
 });
 
 export default mongoose.models.Match || mongoose.model("Match", matchSchema);
