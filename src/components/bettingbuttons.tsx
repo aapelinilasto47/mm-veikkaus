@@ -95,6 +95,12 @@ export default function BettingButtons({
       return;
     }
     setLoading(true);
+    console.log("Saving prediction:", {
+      matchId,
+      choice: currentChoice,
+      homeScore: isSpecial ? "0" : homeScore,
+      awayScore: isSpecial ? "0" : awayScore,
+    });
     try {
       await fetch("/api/predict", {
         method: "POST",
