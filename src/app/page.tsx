@@ -288,12 +288,12 @@ export default async function Home({ searchParams }: HomeProps) {
           </h2>
         </div>
 
-        <div className="bg-gray-900/90 p-4 rounded-xl border border-gray-800 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="bg-gray-900/90 p-4 rounded-xl border border-gray-800 flex flex-col justify-between items-center gap-4">
           <div>
-            <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">
+            <p className="text-xs text-center text-gray-400 uppercase tracking-widest mb-1">
               Sinun valintasi
             </p>
-            <p className="text-lg font-bold text-white">
+            <p className="text-lg font-bold text-white text-center">
               {userPrediction ? userPrediction.choice : "Ei vielä valintaa"}
             </p>
           </div>

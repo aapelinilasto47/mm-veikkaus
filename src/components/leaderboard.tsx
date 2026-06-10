@@ -70,7 +70,7 @@ export default function Leaderboard({
       <details className="group bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-2xl">
         <summary className="list-none p-4 cursor-pointer flex justify-between items-center group-open:bg-gray-800 transition-colors">
           <div className="flex items-center gap-3">
-            <span className="text-xl">🏆</span>
+            <span className="text-xl">📊</span>
             <span className="font-black uppercase tracking-tighter text-blue-400">
               Tulostaulukko {showOnlyFollowed ? "(Seurattavat)" : ""}
             </span>
