@@ -64,15 +64,19 @@ def update_database():
 
     # 2. RESULTS: Tulosten päivitys
     for result in results_list:
-        res_date = result['startTime'].split("T")[0]
+        # Lasketaan tulokselle ID täsmälleen samalla logiikalla kuin fixtureille
+        # getdata-tiedostosta tuodun generate_id-funktion avulla
+        from getdata import generate_id
+        
+        match_id = generate_id(result['home'], result['away'], result['startTime'])
+        
+        # Haetaan suoraan pomminvarmalla ID-haulla!
         existing_res = matches_collection.find_one({
+            "_id": match_id,
             "tournament": "futis_2026",
-            "$or": [
-                {"home": result['home'], "away": result['away']},
-                {"home": result['away'], "away": result['home']}
-            ],
-            "startTime": {"$regex": f"^{res_date}"}
+            
         })
+        print(f"TULOSHAKU: ID={match_id} -> {'LÖYTYI' if existing_res else 'EI LÖYTYNYT'}")
 
         if existing_res:
             # Kohdistetaan maalit oikein päin
@@ -81,7 +85,10 @@ def update_database():
             else:
                 h, a = result['awayScore'], result['homeScore']
 
-            if (existing_res.get('homeScore') != h or existing_res.get('awayScore') != a):
+            # Päivitetään jos kanta on tyhjä (None) tai maalit ovat muuttuneet
+            if (existing_res.get('homeScore') is None or existing_res.get('awayScore') is None or 
+                existing_res.get('homeScore') != h or existing_res.get('awayScore') != a):
+                
                 updates_to_run.append({
                     "id": existing_res["_id"], 
                     "data": {"homeScore": h, "awayScore": a}, 
