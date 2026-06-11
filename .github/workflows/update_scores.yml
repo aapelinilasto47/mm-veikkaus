@@ -1,0 +1,44 @@
+name: Päivitä MM-kisojen tulokset ja pisteet
+
+on:
+  schedule:
+    # Ajaa skriptin automaattisesti kroonausajastuksella joka päivä klo 8, 12, 16 ja 20 (UTC-aikaa)
+    - cron: "0 8,12,16,20 * * *"
+  workflow_dispatch:
+    # Sallii skriptin käynnistämisen myös käsin GitHubin kautta (hyvä testaukseen!)
+
+jobs:
+  update-scores:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Haetaan projektin koodi GitHubista virtuaalikoneelle
+      - name: Checkout repository koodi
+        uses: actions/checkout@v4
+
+      # 2. Asennetaan oikea Python-versio
+      - name: Alusta Python ympäristö
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: "pip" # Optimoi nopeuden välimuistittamalla kirjastot
+
+      # 3. Asennetaan requirements.txt:ssä olevat Python-kirjastot
+      - name: Asenna Python-riippuvuudet
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      # 4. Asennetaan Playwrightin tarvitsemat selaimet ja Linux-kirjastot (KRIITTINEN VAIHE)
+      - name: Asenna Playwright-selaimet ja riippuvuudet
+        run: |
+          python -m playwright install --with-deps
+
+      # 5. Ajetaan se sun scraping-kansiossa oleva movingdata.py-skripti
+      # Välitetään samalla MongoDB Atlas -yhteysmerkkijono suojatusti ympäristömuuttujana
+      - name: Aja tuloshaku ja pistelaskenta
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          # Jos movingdata.py tarvitsee muita .env-muuttujia (esim. NEXTAUTH_SECRET), lisää ne tähän:
+        run: |
+          python scraping/movingdata.py
