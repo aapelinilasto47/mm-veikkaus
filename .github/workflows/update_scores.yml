@@ -2,10 +2,10 @@ name: Päivitä MM-kisojen tulokset ja pisteet
 
 on:
   schedule:
-    # Ajaa skriptin automaattisesti kroonausajastuksella joka päivä klo 8, 12, 16 ja 20 (UTC-aikaa)
+    # Ajaa skriptin automaattisesti kroonausajastuksella joka päivä klo 8, 12, 16 ja 20 (UTC-aika)
     - cron: "0 8,12,16,20 * * *"
   workflow_dispatch:
-    # Sallii skriptin käynnistämisen myös käsin GitHubin kautta (hyvä testaukseen!)
+    # Sallii skriptin käynnistämisen myös käsin GitHubin kautta (erittäin hyvä testaukseen!)
 
 jobs:
   update-scores:
@@ -16,29 +16,31 @@ jobs:
       - name: Checkout repository koodi
         uses: actions/checkout@v4
 
-      # 2. Asennetaan oikea Python-versio
+      # 2. Asennetaan oikea Python-versio (ilman pakollista requirements.txt-välimuistia)
       - name: Alusta Python ympäristö
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
-          cache: "pip" # Optimoi nopeuden välimuistittamalla kirjastot
 
-      # 3. Asennetaan requirements.txt:ssä olevat Python-kirjastot
+      # 3. Asennetaan tarvittavat Python-kirjastot
       - name: Asenna Python-riippuvuudet
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements.txt ]; then 
+            pip install -r requirements.txt
+          else 
+            pip install playwright pymongo python-dotenv
+          fi
 
-      # 4. Asennetaan Playwrightin tarvitsemat selaimet ja Linux-kirjastot (KRIITTINEN VAIHE)
+      # 4. Asennetaan Playwrightin tarvitsemat selaimet ja Linux-kirjastot
       - name: Asenna Playwright-selaimet ja riippuvuudet
         run: |
           python -m playwright install --with-deps
 
-      # 5. Ajetaan se sun scraping-kansiossa oleva movingdata.py-skripti
-      # Välitetään samalla MongoDB Atlas -yhteysmerkkijono suojatusti ympäristömuuttujana
+      # 5. Ajetaan uusi, korjattu movingdata.py-skripti
+      # Välitetään samalla MongoDB Atlas -yhteysmerkkijono suojatusti GitHub Secretsistä
       - name: Aja tuloshaku ja pistelaskenta
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
-          # Jos movingdata.py tarvitsee muita .env-muuttujia (esim. NEXTAUTH_SECRET), lisää ne tähän:
         run: |
           python scraping/movingdata.py
