@@ -430,7 +430,7 @@ export default async function Home({ searchParams }: HomeProps) {
           </div>
           <p className="mt-2 text-xs sm:text-sm text-gray-400 font-medium leading-relaxed">
             Kaveriporukan pyynnöstä sääntöjä on hienosäädetty: jatkossa saat{" "}
-            <span className="text-amber-400 font-bold font-mono">+1 PTS</span>{" "}
+            <span className="text-white/80 font-bold font-mono">+1 PTS</span>{" "}
             lohdutuspisteen, jos veikkauksesi menee vain{" "}
             <span className="text-white font-bold">yhden maalin päähän</span>{" "}
             oikeasta tuloksesta, vaikka varsinainen 1X2-merkki olisi väärin
