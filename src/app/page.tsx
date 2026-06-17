@@ -194,15 +194,18 @@ export default async function Home({ searchParams }: HomeProps) {
             activeTournament === "lätkä_2026" ? (match.isPlayoff ? 20 : 10) : 6;
           const midPoints =
             activeTournament === "lätkä_2026" ? (match.isPlayoff ? 10 : 5) : 4;
-          const minPoints =
+          const winnerPoints =
             activeTournament === "lätkä_2026" ? (match.isPlayoff ? 6 : 3) : 3;
+          const minPoints = 1; // Väärä merkki, mutta maalin päässä
 
           if (earnedPoints === maxPoints && earnedPoints > 0) {
             pointColorClass = "text-rose-500 animate-pulse";
           } else if (earnedPoints >= midPoints) {
             pointColorClass = "text-teal-500";
-          } else if (earnedPoints >= minPoints) {
+          } else if (earnedPoints >= winnerPoints) {
             pointColorClass = "text-emerald-500";
+          } else if (earnedPoints >= minPoints) {
+            pointColorClass = "text-white/80";
           }
 
           return (
@@ -279,12 +282,55 @@ export default async function Home({ searchParams }: HomeProps) {
     const isSpecialFinished =
       match.homeScore !== null && match.awayScore !== null;
 
+    if (isSpecialStarted) {
+      return (
+        <div className="mb-6 bg-gradient-to-r from-amber-950/20 to-gray-900 border border-amber-500/20 p-3 sm:p-4 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-2 shadow-xl">
+          <div className="flex items-center gap-2">
+            <span className="text-md sm:text-lg">🏆</span>
+            <div>
+              <h2 className="text-xs sm:text-sm font-black text-amber-400 uppercase tracking-wider">
+                {match.home}
+              </h2>
+              <p className="text-[10px] text-red-400 font-bold uppercase tracking-widest">
+                Lukittu
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end border-t border-gray-800 sm:border-0 pt-2 sm:pt-0">
+            {/* Näytetään lopputulos, jos kisa on ratkennut */}
+            {isSpecialFinished && (
+              <div className="bg-amber-900/40 border border-amber-700/30 px-2.5 py-0.5 rounded text-center">
+                <span className="text-[9px] text-amber-300 font-bold uppercase tracking-wider block">
+                  Voittaja
+                </span>
+                <span className="font-mono font-bold text-xs text-yellow-400">
+                  {match.homeScore}
+                </span>
+              </div>
+            )}
+
+            {/* Käyttäjän oma veikkaus siististi */}
+            <div className="bg-black/40 border border-white/5 px-3 py-1.5 rounded-lg flex items-center gap-2 text-xs">
+              <span className="text-gray-400 uppercase tracking-widest text-[10px]">
+                Oma veikkauksesi:
+              </span>
+              <span className="font-bold text-yellow-500 uppercase">
+                {userPrediction?.homeScore || userPrediction?.choice || "-"}
+              </span>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // --- 2. ALKUPERÄINEN ISO LOMAKE (KUN VEIKKAUS ON VIELÄ AUKI) ---
     return (
       <div className="mb-10 bg-gradient-to-br from-amber-950/20 to-yellow-950/20 border border-amber-500/30 p-4 sm:p-6 rounded-2xl shadow-2xl">
         <div className="flex items-center gap-2 mb-3">
           <span className="text-xl animate-bounce">🏆</span>
           <h2 className="text-lg font-black text-amber-400 uppercase tracking-wider">
-            {match.home} {/* "Mestariveikkaus 2026" */}
+            {match.home}
           </h2>
         </div>
 
@@ -298,21 +344,6 @@ export default async function Home({ searchParams }: HomeProps) {
             </p>
           </div>
 
-          {isSpecialFinished && (
-            <div className="bg-amber-900/40 border border-amber-700/50 px-3 py-1 rounded-lg text-center">
-              <span className="text-xs text-amber-300 block font-bold uppercase">
-                Oikea mestari
-              </span>
-              <span className="font-mono font-bold text-yellow-400">
-                {match.homeScore}
-              </span>
-            </div>
-          )}
-
-          {/* HUOM: Koska Mestariveikkaus tarvitsee luultavasti tekstivalinnan/pudotusvalikon 
-            perinteisten maalinappien sijaan, voit joko muokata BettingButtons-komponenttiasi 
-            tukemaan sitä, tai tehdä tätä varten pienen oman komponentin myöhemmin.
-          */}
           <BettingButtons
             matchId={match._id.toString()}
             initialChoice={userPrediction ? userPrediction.choice : null}
@@ -387,6 +418,38 @@ export default async function Home({ searchParams }: HomeProps) {
           </div>
         )}
 
+        {/* PISTEYTYSMUUTOS ILMOITUS - TUMMA TEEMA */}
+        <div className="mb-8 max-w-3xl mx-auto rounded-xl border border-amber-500/20 bg-gradient-to-r from-amber-950/10 to-transparent p-4 text-left shadow-2xl">
+          <div className="flex items-center space-x-2 text-amber-400">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2.5}
+              stroke="currentColor"
+              className="h-5 w-5 flex-shrink-0"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.83-5.83m0 0a2.921 2.921 0 1 0-4.134-4.134m4.134 4.134A2.919 2.919 0 0 1 11.03 11.7l-5.83 5.83m.547-2.117M3.01 19.491v2.404H5.41l1.717-1.713m-2.52-2.396L3.01 19.49"
+              />
+            </svg>
+            <h3 className="font-black text-sm sm:text-base uppercase tracking-wider">
+              Pistelaskentaa päivitetty! 🛠️
+            </h3>
+          </div>
+          <p className="mt-2 text-xs sm:text-sm text-gray-400 font-medium leading-relaxed">
+            Kaveriporukan pyynnöstä sääntöjä on hienosäädetty: jatkossa saat{" "}
+            <span className="text-amber-400 font-bold font-mono">+1 PTS</span>{" "}
+            lohdutuspisteen, jos veikkauksesi menee vain{" "}
+            <span className="text-white font-bold">yhden maalin päähän</span>{" "}
+            oikeasta tuloksesta, vaikka varsinainen 1X2-merkki olisi väärin
+            (esim. veikkasit 1-1, peli päättyi 2-1). Muutos päivittyy
+            takautuvasti myös jo pelattuihin otteluihin!
+          </p>
+        </div>
+
         <div className="max-w-3xl mx-auto mb-8">
           <Leaderboard
             sortedLeaderboard={JSON.parse(JSON.stringify(sortedLeaderboard))}
@@ -396,7 +459,6 @@ export default async function Home({ searchParams }: HomeProps) {
       </header>
 
       <div className="max-w-3xl mx-auto">
-        {specialMatch && renderSpecialMatch(specialMatch)}
         {pastDays.length > 0 && (
           <details className="group bg-gray-900 rounded-2xl mb-8 overflow-hidden shadow-xl">
             <summary className="list-none p-4 cursor-pointer flex justify-between items-center bg-gray-900/40 hover:bg-gray-900/60 transition-colors select-none">
@@ -428,6 +490,16 @@ export default async function Home({ searchParams }: HomeProps) {
           </details>
         )}
 
+        {specialMatch && renderSpecialMatch(specialMatch)}
+
+        {activeDays.map((date) => renderDaySection(date))}
+
+        {activeDays.length === 0 && pastDays.length > 0 && (
+          <p className="text-center text-gray-500 italic py-10">
+            Kaikki turnauksen ottelut on pelattu! Katso tulokset ylhäältä.
+          </p>
+        )}
+
         <div className="w-full bg-amber-950/30 border border-amber-900/50 p-3 rounded-lg mb-6 flex items-center gap-3">
           <span className="text-xl">⚠️</span>
           <p className="text-xs md:text-sm text-amber-200/80 leading-relaxed">
@@ -438,15 +510,6 @@ export default async function Home({ searchParams }: HomeProps) {
             kärsivällisyydestä!
           </p>
         </div>
-
-        {activeDays.map((date) => renderDaySection(date))}
-
-        {activeDays.length === 0 && pastDays.length > 0 && (
-          <p className="text-center text-gray-500 italic py-10">
-            Kaikki turnauksen ottelut on pelattu! Katso tulokset ylhäältä.
-          </p>
-        )}
-
         <div className="flex flex-col items-center mb-8">
           <a
             href="https://github.com/aapelinilasto47/mm-veikkaus"
