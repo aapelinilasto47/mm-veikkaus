@@ -421,22 +421,9 @@ export default async function Home({ searchParams }: HomeProps) {
         {/* PISTEYTYSMUUTOS ILMOITUS - TUMMA TEEMA */}
         <div className="mb-8 max-w-3xl mx-auto rounded-xl border border-amber-500/20 bg-gradient-to-r from-amber-950/10 to-transparent p-4 text-left shadow-2xl">
           <div className="flex items-center space-x-2 text-amber-400">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2.5}
-              stroke="currentColor"
-              className="h-5 w-5 flex-shrink-0"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.83-5.83m0 0a2.921 2.921 0 1 0-4.134-4.134m4.134 4.134A2.919 2.919 0 0 1 11.03 11.7l-5.83 5.83m.547-2.117M3.01 19.491v2.404H5.41l1.717-1.713m-2.52-2.396L3.01 19.49"
-              />
-            </svg>
+            <span className="text-lg">⚡</span>
             <h3 className="font-black text-sm sm:text-base uppercase tracking-wider">
-              Pistelaskentaa päivitetty! 🛠️
+              Pistelaskentaa päivitetty!
             </h3>
           </div>
           <p className="mt-2 text-xs sm:text-sm text-gray-400 font-medium leading-relaxed">
