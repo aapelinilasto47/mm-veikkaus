@@ -284,38 +284,40 @@ export default async function Home({ searchParams }: HomeProps) {
 
     if (isSpecialStarted) {
       return (
-        <div className="mb-6 bg-gradient-to-r from-amber-950/20 to-gray-900 border border-amber-500/20 p-3 sm:p-4 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-2 shadow-xl">
-          <div className="flex items-center gap-2">
-            <span className="text-md sm:text-lg">🏆</span>
-            <div>
-              <h2 className="text-xs sm:text-sm font-black text-amber-400 uppercase tracking-wider">
+        <div className="mb-6 bg-gradient-to-r from-amber-950/20 to-gray-900 border border-amber-500/20 p-4 rounded-xl flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 shadow-xl max-w-3xl mx-auto">
+          {/* VASEN REUNA / YLÄOSA: Iconi, Otsikko ja Lukittu-status pysyvät samassa linjassa */}
+          <div className="flex items-start gap-3">
+            <span className="text-xl mt-0.5 flex-shrink-0">🏆</span>
+            <div className="flex flex-col">
+              <h2 className="text-sm sm:text-base font-black text-amber-400 uppercase tracking-wider leading-none">
                 {match.home}
               </h2>
-              <p className="text-[10px] text-red-400 font-bold uppercase tracking-widest">
+              <span className="text-[10px] text-red-400 font-bold uppercase tracking-widest mt-1">
                 Lukittu
-              </p>
+              </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end border-t border-gray-800 sm:border-0 pt-2 sm:pt-0">
+          {/* OIKEA REUNA / ALAOSA: Tulokset ja Oma veikkaus – mobiilissa linjassa otsikon kanssa (pl. ikonin viemä tila) */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pl-8 sm:pl-0 w-full sm:w-auto ml-0.5 sm:ml-0">
             {/* Näytetään lopputulos, jos kisa on ratkennut */}
             {isSpecialFinished && (
-              <div className="bg-amber-900/40 border border-amber-700/30 px-2.5 py-0.5 rounded text-center">
-                <span className="text-[9px] text-amber-300 font-bold uppercase tracking-wider block">
+              <div className="bg-amber-900/40 border border-amber-700/30 px-3 py-1 rounded-lg flex sm:flex-col justify-between sm:justify-center items-center gap-2 sm:gap-0 min-w-[100px]">
+                <span className="text-[9px] text-amber-300 font-bold uppercase tracking-wider">
                   Voittaja
                 </span>
-                <span className="font-mono font-bold text-xs text-yellow-400">
+                <span className="font-mono font-bold text-sm text-yellow-400">
                   {match.homeScore}
                 </span>
               </div>
             )}
 
-            {/* Käyttäjän oma veikkaus siististi */}
-            <div className="bg-black/40 border border-white/5 px-3 py-1.5 rounded-lg flex items-center gap-2 text-xs">
-              <span className="text-gray-400 uppercase tracking-widest text-[10px]">
+            {/* Käyttäjän oma veikkaus: täydellisessä linjassa mobiilissa */}
+            <div className="bg-black/45 border border-white/5 px-4 py-2 rounded-lg flex justify-between sm:justify-start items-center gap-3 text-xs w-full sm:w-auto">
+              <span className="text-gray-400 uppercase tracking-widest text-[10px] font-medium">
                 Oma veikkauksesi:
               </span>
-              <span className="font-bold text-yellow-500 uppercase">
+              <span className="font-black text-yellow-500 uppercase tracking-wide">
                 {userPrediction?.homeScore || userPrediction?.choice || "-"}
               </span>
             </div>
