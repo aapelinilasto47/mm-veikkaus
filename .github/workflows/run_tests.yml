@@ -1,0 +1,43 @@
+name: Aja sovelluksen testit (Vitest)
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  # VAIHE A: Ajetaan TypeScript-testit
+  typescript-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout koodi
+        uses: actions/checkout@v4
+
+      - name: Alusta Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Asenna riippuvuudet
+        run: npm ci
+
+      - name: Aja Vitest-testit
+        run: npx vitest run
+
+  # VAIHE B: Ajetaan Python-testit
+  python-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout koodi
+        uses: actions/checkout@v4
+
+      - name: Alusta Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      # Ajetaan testi suoraan (unittest ei vaadi erillisiä kirjastorasituksia)
+      - name: Aja Python-yksikkötestit
+        run: python scraping/test_scraper.py
