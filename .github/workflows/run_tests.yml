@@ -1,4 +1,4 @@
-name: Aja sovelluksen testit (Vitest)
+name: Aja sovelluksen testit (Vitest ja unittest)
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
           cache: "npm"
 
       - name: Asenna riippuvuudet
-        run: npm ci
+        run: npm install
 
       - name: Aja Vitest-testit
         run: npx vitest run
