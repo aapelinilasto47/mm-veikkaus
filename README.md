@@ -23,9 +23,21 @@ Sovellus on rakennettu modernilla Next.js 14+ -kehityskehyksellä (App Router) h
 
 Turnausdatan hallinta ja tulosten päivitys on täysin automatisoitu, jotta sovellus pyörii itsenäisesti tuotannossa läpi kisojen:
 
-- **CI/CD & Automaatio:** GitHub Actions ajaa tulosten päivitysrutiinit automaattisesti kerran tunnissa.
+- **CI/CD & Automaatio:** GitHub Actions ajaa tulosten päivitysrutiinit automaattisesti turnauksen otteluaikojen mukaan.
 - **Scraping-logiikka:** Taustalla pyörivä Playwright-skripti hakee viralliset tulokset livenä, minkä jälkeen kantaan päivitetään vain muuttuneet kentät (`$set`).
 - **Vikasietoisuus (Robustness):** Koska virallisen turnauskaavion muuttuessa pelkkä sokea ID-hashaus voi luoda duplikaatteja, backend-logiikka käyttää älykästä nimipohjaista varmistuskerrosta (`$or`-haut). Tämä suojaa olemassa olevaa dataa ja pelaajien veikkauksia kaikissa tilanteissa.
+
+---
+
+## 🧪 Automaattinen testaus
+
+### TypeScript & Next.js (Pistelaskenta)
+
+Pistelaskentalogiikka (`src/lib/scoreCalculator.ts`) on suojattu yksikkötesteillä Vitest-testauskehystä käyttäen. Testit ajetaan Node 20 -ympäristössä, ja ne kattavat standarditilanteiden lisäksi erikoistapaukset (Edge Caset):
+
+- Täydelliset osumat (oikea maalimäärä ja merkki)
+- Oikeat 1X2-merkit väärillä maalimäärillä
+- Läheltä piti-tilanteet, eli 1 maalin päässä täysosumasta
 
 ---
 
@@ -48,16 +60,17 @@ Pistelaskenta mukautuu lennosta valitun turnauksen sääntöjen mukaan ja palkit
 - **10 pistettä:** Täysosuma (Jackpot 🎯) – Maalit täsmälleen oikein.
 - **5 pistettä:** Oikea voittaja ja Jackpot maalin päässä.
 - **3 pistettä:** Oikea voittaja (1X2-tulos).
-
-- _Pudotuspelit:_ Panokset kovenevat ja pisteet tuplataan (esim. Täysosuma = 20 pistettä).
+- **1 piste:** Jackpot maalin päässä, Väärä voittaja (1X2)
 
 ### Jalkapallon MM-veikkaus
 
 - **6 pistettä:** Täysosuma (Jackpot 🎯) – Maalit täsmälleen oikein.
 - **4 pistettä:** Oikea voittaja ja Jackpot maalin päässä.
 - **3 pistettä:** Oikea voittaja (1X2-tulos).
+- **1 piste:** Jackpot maalin päässä, Väärä voittaja (1X2)
 
-**Tasapelisääntö:** Jos kokonaispisteet ovat tasan, "täysosumien" (Jackpot) määrä ratkaisee korkeamman sijoituksen leaderboardilla.
+- _Pudotuspelit:_ Panokset kovenevat ja pisteet tuplataan (esim. Täysosuma = 20 pistettä).
+  **Tasapelisääntö:** Jos kokonaispisteet ovat tasan, "täysosumien" (Jackpot) määrä ratkaisee korkeamman sijoituksen leaderboardilla.
 
 ---
 
