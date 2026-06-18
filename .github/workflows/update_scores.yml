@@ -2,21 +2,23 @@ name: Päivitä MM-kisojen tulokset ja pisteet
 
 on:
   schedule:
-    # Ajaa skriptin automaattisesti kroonausajastuksella joka päivä klo 8, 12, 16 ja 20 (UTC-aika)
-    - cron: "0 8,12,16,20 * * *"
+    # Ajaa skriptin automaattisesti kroonausajastuksella joka päivä klo 00:00, 04:00, 06:00, 08:00, 20:00 ja 22:00 (UTC-aikaa) - eli Suomen aikaa klo 02:00, 06:00, 08:00, 10:00, 22:00 ja 00:00
+    - cron: "0 0,4,6,8,20,22 * * *"
   workflow_dispatch:
     # Sallii skriptin käynnistämisen myös käsin GitHubin kautta (erittäin hyvä testaukseen!)
 
 jobs:
   update-scores:
     runs-on: ubuntu-latest
+    # OPTIMOINTI 1: Henkivakuutus. Katkaistaan ajo, jos se jumittaa yli 3 minuuttia
+    timeout-minutes: 3
 
     steps:
       # 1. Haetaan projektin koodi GitHubista virtuaalikoneelle
       - name: Checkout repository koodi
         uses: actions/checkout@v4
 
-      # 2. Asennetaan oikea Python-versio (ilman pakollista requirements.txt-välimuistia)
+      # 2. Asennetaan oikea Python-versio
       - name: Alusta Python ympäristö
         uses: actions/setup-python@v5
         with:
@@ -32,10 +34,23 @@ jobs:
             pip install playwright pymongo python-dotenv
           fi
 
-      # 4. Asennetaan Playwrightin tarvitsemat selaimet ja Linux-kirjastot
+      # OPTIMOINTI 2: Haetaan aiemmin ladattu selain GitHubin omasta välimuistista
+      - name: Tarkista Playwright-selaimet välimuistista
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/requirements.txt') }}
+
+      # OPTIMOINTI 3: Jos selain löytyy, asennetaan vain Linux-kirjastot.
+      # Jos ei löydy, ladataan pelkkä Chromium (ei muita turhia selaimia).
       - name: Asenna Playwright-selaimet ja riippuvuudet
         run: |
-          python -m playwright install --with-deps
+          if [ "${{ steps.playwright-cache.outputs.cache-hit }}" != "true" ]; then
+            python -m playwright install chromium --with-deps
+          else
+            python -m playwright install-deps chromium
+          fi
 
       # 5. Ajetaan uusi, korjattu movingdata.py-skripti
       # Välitetään samalla MongoDB Atlas -yhteysmerkkijono suojatusti GitHub Secretsistä
