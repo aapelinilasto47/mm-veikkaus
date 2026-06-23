@@ -43,6 +43,10 @@ export default function RulesAccordion() {
                   Oikea voittaja (1X2)
                 </li>
                 <li>
+                  <span className="text-white-400 font-bold">1p</span> – Väärä
+                  voittaja, mutta maalin päässä täysosumasta
+                </li>
+                <li>
                   <span className="text-gray-500 font-bold">0p</span> – Väärä
                   voittaja
                 </li>

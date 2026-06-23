@@ -420,25 +420,6 @@ export default async function Home({ searchParams }: HomeProps) {
           </div>
         )}
 
-        {/* PISTEYTYSMUUTOS ILMOITUS - TUMMA TEEMA */}
-        <div className="mb-8 max-w-3xl mx-auto rounded-xl border border-amber-500/20 bg-gradient-to-r from-amber-950/10 to-transparent p-4 text-left shadow-2xl">
-          <div className="flex items-center space-x-2 text-amber-400">
-            <span className="text-lg">⚡</span>
-            <h3 className="font-black text-sm sm:text-base uppercase tracking-wider">
-              Pistelaskentaa päivitetty!
-            </h3>
-          </div>
-          <p className="mt-2 text-xs sm:text-sm text-gray-400 font-medium leading-relaxed">
-            Kaveriporukan pyynnöstä sääntöjä on hienosäädetty: jatkossa saat{" "}
-            <span className="text-white/80 font-bold font-mono">+1 PTS</span>{" "}
-            lohdutuspisteen, jos veikkauksesi menee vain{" "}
-            <span className="text-white font-bold">yhden maalin päähän</span>{" "}
-            oikeasta tuloksesta, vaikka varsinainen 1X2-merkki olisi väärin
-            (esim. veikkasit 1-1, peli päättyi 2-1). Muutos päivittyy
-            takautuvasti myös jo pelattuihin otteluihin!
-          </p>
-        </div>
-
         <div className="max-w-3xl mx-auto mb-8">
           <Leaderboard
             sortedLeaderboard={JSON.parse(JSON.stringify(sortedLeaderboard))}
