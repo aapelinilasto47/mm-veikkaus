@@ -107,7 +107,6 @@ export default async function Home({ searchParams }: HomeProps) {
   const groupedMatches = sortedMatches.reduce((groups: any, match: any) => {
     const d = new Date(match.startTime);
     const dayMonth = `${d.getDate()}.${d.getMonth() + 1}.`;
-    const isPlayoff = match.isPlayoff ? " (Pudotuspelit)" : "";
 
     const today = new Date();
     const isToday =
@@ -117,10 +116,10 @@ export default async function Home({ searchParams }: HomeProps) {
 
     let dateLabel = "";
     if (isToday) {
-      dateLabel = `Tänään ${dayMonth}${isPlayoff}`;
+      dateLabel = `Tänään ${dayMonth}`;
     } else {
       const weekday = d.toLocaleDateString("fi-FI", { weekday: "long" });
-      dateLabel = `${weekday} ${dayMonth}${isPlayoff}`;
+      dateLabel = `${weekday} ${dayMonth}`;
     }
 
     if (!groups[dateLabel]) {
@@ -211,8 +210,19 @@ export default async function Home({ searchParams }: HomeProps) {
           return (
             <div
               key={match._id.toString()}
-              className="bg-gray-900 p-3 sm:p-5 rounded-xl border border-gray-800 flex justify-between items-center hover:border-gray-600 transition-colors shadow-xl overflow-hidden"
+              className={`relative p-3 sm:p-5 rounded-xl border flex justify-between items-center hover:border-gray-600 transition-colors shadow-xl overflow-hidden ${
+                match.isPlayoff
+                  ? "bg-gradient-to-br from-blue-950/20 to-purple-700/20 border-indigo-900/40 pt-7 sm:pt-9"
+                  : "bg-gray-900 border-gray-800"
+              }`}
             >
+              {/* PUDOTUSPELI-BADGE KORTIN YLÄREUNASSA */}
+              {match.isPlayoff && (
+                <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-blue-500 to-purple-600 text-[9px] sm:text-xs font-black uppercase tracking-widest py-1 sm:py-1 text-center text-white flex items-center justify-center gap-1 shadow-sm select-none">
+                  🔥 Pudotuspeli – Tuplapisteet! 🔥
+                </div>
+              )}
+
               {/* KOTIJOUKKUE: Lukittu 30% leveys mobiilissa siirtymien estämiseksi */}
               <div className="w-[30%] sm:flex-1 text-center font-bold text-sm sm:text-2xl whitespace-normal break-words sm:truncate px-1">
                 {match.home}
