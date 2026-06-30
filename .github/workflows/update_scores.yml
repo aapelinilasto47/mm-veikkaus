@@ -34,13 +34,13 @@ jobs:
             pip install playwright pymongo python-dotenv
           fi
 
-      # OPTIMOINTI 2: Haetaan aiemmin ladattu selain GitHubin omasta välimuistista
+      # KORJAUS: Lisätty -v2- avaimeen, mikä pakottaa GitHubin lataamaan uuden oikean selaimen
       - name: Tarkista Playwright-selaimet välimuistista
         id: playwright-cache
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('**/requirements.txt') }}
+          key: ${{ runner.os }}-playwright-v2-${{ hashFiles('**/requirements.txt') }}
 
       # OPTIMOINTI 3: Jos selain löytyy, asennetaan vain Linux-kirjastot.
       # Jos ei löydy, ladataan pelkkä Chromium (ei muita turhia selaimia).
