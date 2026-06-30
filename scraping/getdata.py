@@ -100,9 +100,17 @@ def scrape_results():
             a_score_el = match.query_selector(".event__score--away")
             
             if not h_score_el or not a_score_el: continue
-            
-            h_score = int(h_score_el.inner_text().strip())
-            a_score = int(a_score_el.inner_text().strip())
+
+            print(f"h_score_el: {h_score_el.inner_text()}, a_score_el: {a_score_el.inner_text()}")
+
+            if "(" and ")" in h_score_el.inner_text() and "(" and ")" in a_score_el.inner_text():
+                h_score = int(h_score_el.inner_text().split("(")[0].strip())
+                a_score = int(a_score_el.inner_text().split("(")[0].strip())
+            else:
+                h_score = int(h_score_el.inner_text().strip())
+                a_score = int(a_score_el.inner_text().strip())
+
+            print(f"Parsed scores: {home} {h_score} - {a_score} {away} ({iso_date})")
 
             # JATKOAIKASÄÄNTÖ: Vähennetään maali voittajalta jos peli ratkesi JA/VL
             if date_raw.endswith("JA:n jälk.") or date_raw.endswith("RP:n jälk."):
