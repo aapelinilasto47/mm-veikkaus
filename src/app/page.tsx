@@ -190,12 +190,30 @@ export default async function Home({ searchParams }: HomeProps) {
 
           let pointColorClass = "text-gray-500";
           const maxPoints =
-            activeTournament === "lätkä_2026" ? (match.isPlayoff ? 20 : 10) : 6;
+            activeTournament === "lätkä_2026"
+              ? match.isPlayoff
+                ? 20
+                : 10
+              : match.isPlayoff
+                ? 12
+                : 6;
           const midPoints =
-            activeTournament === "lätkä_2026" ? (match.isPlayoff ? 10 : 5) : 4;
+            activeTournament === "lätkä_2026"
+              ? match.isPlayoff
+                ? 10
+                : 5
+              : match.isPlayoff
+                ? 8
+                : 4;
           const winnerPoints =
-            activeTournament === "lätkä_2026" ? (match.isPlayoff ? 6 : 3) : 3;
-          const minPoints = 1; // Väärä merkki, mutta maalin päässä
+            activeTournament === "lätkä_2026"
+              ? match.isPlayoff
+                ? 6
+                : 3
+              : match.isPlayoff
+                ? 6
+                : 3;
+          const minPoints = match.isPlayoff ? 2 : 1; // Väärä merkki, mutta maalin päässä
 
           if (earnedPoints === maxPoints && earnedPoints > 0) {
             pointColorClass = "text-rose-500 animate-pulse";
