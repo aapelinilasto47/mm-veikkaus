@@ -15,11 +15,22 @@ def update_database():
     matches_collection = db["matches"]
 
     print("--- Päivitys alkanut ---")
-    fixtures_list = scrape_fixtures()
-    results_list = scrape_results()
-    
+    try:
+        fixtures_list = scrape_fixtures()
+    except Exception as e:
+        print(f"Virhe haettaessa fixtures: {e}")
+        fixtures_list = []
+        
+    try:
+        results_list = scrape_results()
+    except Exception as e:
+        print(f"Virhe haettaessa results: {e}")
+        results_list = []
+
     updates_to_run = []
     processed_ids = set()
+
+    print(f"\nHaettu {len(fixtures_list)} uutta peliä ja {len(results_list)} tulosta.")
 
     # 1. FIXTURES: Uudet pelit ja aikataulut
     for fixture in fixtures_list:
@@ -76,7 +87,7 @@ def update_database():
             "tournament": "futis_2026",
             
         })
-        print(f"TULOSHAKU: ID={match_id} -> {'LÖYTYI' if existing_res else 'EI LÖYTYNYT'}")
+        
 
         if existing_res:
             # Kohdistetaan maalit oikein päin

@@ -29,7 +29,7 @@ def scrape_fixtures():
         for match in matches:
             home = match.query_selector(".event__homeParticipant").inner_text().strip()
             away = match.query_selector(".event__awayParticipant").inner_text().strip()
-            time_raw = match.query_selector(".event__time").inner_text()
+            time_raw = match.query_selector(".event__stageTime").inner_text()
             
             if ":" not in time_raw: continue
 
@@ -78,7 +78,7 @@ def scrape_results():
             home = re.sub(r'\s+\d+$', '', home_raw).strip()
             away = re.sub(r'\s+\d+$', '', away_raw).strip()
 
-            date_raw = match.query_selector(".event__time").inner_text()
+            date_raw = match.query_selector(".event__stageTime").inner_text()
             
             day_part = date_raw.split(" ")[0]
 
@@ -110,7 +110,7 @@ def scrape_results():
                 h_score = int(h_score_el.inner_text().strip())
                 a_score = int(a_score_el.inner_text().strip())
 
-            print(f"Parsed scores: {home} {h_score} - {a_score} {away} ({iso_date})")
+            
 
             # JATKOAIKASÄÄNTÖ: Vähennetään maali voittajalta jos peli ratkesi JA/VL
             if date_raw.endswith("JA:n jälk.") or date_raw.endswith("RP:n jälk."):
